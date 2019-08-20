@@ -77,8 +77,13 @@ public class XmlRpcFileManagerServer implements FileManagerServer {
         webServer = new WebServer(this.port);
         webServer.addHandler("filemgr", this);
         webServer.start();
-        this.fileManager = new FileManager();
-        this.loadConfiguration();
+        try {
+            this.fileManager = new FileManager();
+            this.loadConfiguration();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
@@ -98,31 +103,15 @@ public class XmlRpcFileManagerServer implements FileManagerServer {
         fileManager.setDataTransfer(dataTransfer);
 
     }
-    
+
     public boolean refreshConfigAndPolicy() {
-
-        boolean success = fileManager.refreshConfigAndPolicy();
         try {
-        String transferFactory = null;
-
-        transferFactory = System.getProperty("filemgr.datatransfer.factory",
-                "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory");
-
-        DataTransfer dataTransfer = GenericFileManagerObjectFactory
-                .getDataTransferServiceFromFactory(transferFactory);
-
-        dataTransfer
-                .setFileManagerUrl(new URL("http://localhost:" + port));
-        fileManager.setDataTransfer(dataTransfer);
-
-
-            fileManager.loadConfiguration();
+            this.loadConfiguration();
+            return this.fileManager.refreshConfigAndPolicy();
         } catch (IOException e) {
             e.printStackTrace();
-            success = false;
+            return false;
         }
-        return success;
-
     }
 
     public boolean transferringProduct(Hashtable<String, Object> productHash) {

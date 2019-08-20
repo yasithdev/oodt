@@ -73,7 +73,6 @@ public class AvroFileManagerServer implements AvroFileManager, FileManagerServer
     @Override
     public boolean startUp() throws Exception {
         server = new NettyServer(new SpecificResponder(AvroFileManager.class,this),new InetSocketAddress(this.port));
-        server.start();
         try {
             this.fileManager = new FileManager();
             this.loadConfiguration();
@@ -122,7 +121,13 @@ public class AvroFileManagerServer implements AvroFileManager, FileManagerServer
 
     @Override
     public boolean refreshConfigAndPolicy() throws AvroRemoteException {
-        return this.fileManager.refreshConfigAndPolicy();
+        try {
+            this.loadConfiguration();
+            return this.fileManager.refreshConfigAndPolicy();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
