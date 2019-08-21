@@ -73,17 +73,19 @@ public class AvroFileManagerServer implements AvroFileManager, FileManagerServer
     @Override
     public boolean startUp() throws Exception {
         server = new NettyServer(new SpecificResponder(AvroFileManager.class,this),new InetSocketAddress(this.port));
+        server.start();
         try {
             this.fileManager = new FileManager();
             this.loadConfiguration();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error starting file manager : " + e.getMessage(), e);
             return false;
         }
         return true;
     }
 
     public void loadConfiguration() throws IOException {
+        logger.debug("Loading avro file manager configuration");
         fileManager.loadConfiguration();
 
         String transferFactory = null;

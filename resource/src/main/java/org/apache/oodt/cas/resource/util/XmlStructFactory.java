@@ -27,6 +27,8 @@ import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.commons.xml.XMLUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -35,8 +37,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -53,7 +53,7 @@ import java.util.logging.Logger;
 public final class XmlStructFactory {
 
     /* our log stream */
-    public static Logger LOG = Logger.getLogger(XmlStructFactory.class
+    public static Logger LOG = LoggerFactory.getLogger(XmlStructFactory.class
             .getName());
 
     private XmlStructFactory() throws InstantiationException {
@@ -76,7 +76,7 @@ public final class XmlStructFactory {
 					: resourceNodeRoot.getAttribute("ip"));
             capacity = Integer.valueOf(resourceNodeRoot.getAttribute("capacity"));
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage());
         }
 
         return new ResourceNode(id, ip, capacity);

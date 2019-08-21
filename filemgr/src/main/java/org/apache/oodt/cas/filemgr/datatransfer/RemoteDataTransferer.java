@@ -24,6 +24,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 //JDK imports
@@ -34,8 +36,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -67,7 +67,7 @@ public class RemoteDataTransferer implements DataTransfer {
    private FileManagerClient client = null;
 
    /* our log stream */
-   private static final Logger LOG = Logger
+   private static final Logger LOG = LoggerFactory
          .getLogger(RemoteDataTransferer.class.getName());
 
    /**
@@ -88,10 +88,10 @@ public class RemoteDataTransferer implements DataTransfer {
       try {
          client = RpcCommunicationFactory.createClient(url);
          this.fileManagerUrl = url;
-         LOG.log(Level.INFO, "Remote Data Transfer to: ["
+         LOG.info("Remote Data Transfer to: ["
                + client.getFileManagerUrl().toString() + "] enabled");
       } catch (ConnectionException e) {
-         LOG.log(Level.WARNING, "Connection exception for filemgr: [" + url
+         LOG.warn("Connection exception for filemgr: [" + url
                + "]");
       }
    }
@@ -121,26 +121,25 @@ public class RemoteDataTransferer implements DataTransfer {
        try {
          refFile = new File(new URI(r.getOrigReference()));
        } catch (URISyntaxException e) {
-         LOG.log(Level.WARNING,
+         LOG.warn(
              "Unable to test if reference: [" + r.getOrigReference()
              + "] is a directory: skipping it");
          continue;
        }
 
        if (!refFile.isDirectory()) {
-         LOG.log(Level.FINE, "Reference: [" + r.getOrigReference()
+         LOG.info("Reference: [" + r.getOrigReference()
                              + "] is file: transferring it");
 
          try {
            remoteTransfer(r, product);
          } catch (URISyntaxException e) {
-           LOG.log(Level.WARNING,
+           LOG.warn(
                "Error transferring file: [" + r.getOrigReference()
                + "]: URISyntaxException: " + e.getMessage());
          }
        } else {
-         LOG.log(
-             Level.FINE,
+         LOG.info(
              "RemoteTransfer: skipping reference: ["
              + refFile.getAbsolutePath() + "] of product: ["
              + product.getProductName() + "]: ref is a directory");
@@ -167,8 +166,7 @@ public class RemoteDataTransferer implements DataTransfer {
                   reference.getDataStoreReference()));
             File dest = new File(directory, dataStoreFile.getName());
             fOut = new FileOutputStream(dest, false);
-            LOG.log(
-                  Level.INFO,
+            LOG.info(
                   "RemoteDataTransfer: Copying File: " + "fmp:"
                         + dataStoreFile.getAbsolutePath() + " to " + "file:"
                         + dest.getAbsolutePath());
@@ -230,7 +228,7 @@ public class RemoteDataTransferer implements DataTransfer {
          // remove the file if it already exists: this operation
          // is an overwrite
          if (!client.removeFile(destFilePath)) {
-            LOG.log(Level.WARNING,
+            LOG.warn(
                   "RemoteDataTransfer: attempt to perform overwrite of dest file: ["
                         + destFilePath + "] failed");
          }
@@ -239,15 +237,14 @@ public class RemoteDataTransferer implements DataTransfer {
             client.transferFile(destFilePath, buf, offset, numBytes);
          }
       } catch (IOException e) {
-         LOG.log(Level.WARNING,
+         LOG.warn(
                "Error opening input stream to read file to transfer: Message: "
                      + e.getMessage());
       } catch (DataTransferException e) {
-         LOG.log(
-               Level.WARNING,
+         LOG.warn(
                "DataTransferException when transfering file: [" + origFilePath
                      + "] to [" + destFilePath + "]: Message: "
-                     + e.getMessage());
+                     + e.getMessage(), e);
       } finally {
          if (is != null) {
             try {
@@ -263,8 +260,8 @@ public class RemoteDataTransferer implements DataTransfer {
       try {
          client.transferringProduct(p);
       } catch (DataTransferException e) {
-         LOG.log(Level.SEVERE, e.getMessage());
-         LOG.log(Level.WARNING,
+         LOG.error(e.getMessage());
+         LOG.warn(
                "Error notifying file manager of product transfer initiation for product: ["
                      + p.getProductId() + "]: Message: " + e.getMessage());
       }
@@ -274,8 +271,8 @@ public class RemoteDataTransferer implements DataTransfer {
       try {
          client.removeProductTransferStatus(p);
       } catch (DataTransferException e) {
-         LOG.log(Level.SEVERE, e.getMessage());
-         LOG.log(Level.WARNING,
+         LOG.error(e.getMessage());
+         LOG.warn(
                "Error notifying file manager of product transfer completion for product: ["
                      + p.getProductId() + "]: Message: " + e.getMessage());
       }

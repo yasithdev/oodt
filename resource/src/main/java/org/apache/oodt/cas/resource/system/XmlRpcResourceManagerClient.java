@@ -32,6 +32,8 @@ import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 import org.apache.xmlrpc.CommonsXmlRpcTransportFactory;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.io.File;
@@ -41,8 +43,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -65,7 +65,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
     private XmlRpcClient client = null;
 
     /* our log stream */
-    private static Logger LOG = Logger
+    private static Logger LOG = LoggerFactory
             .getLogger(XmlRpcResourceManagerClient.class.getName());
 
     /* resource manager url */
@@ -85,14 +85,14 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
         if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
             String configFile = System
                     .getProperty("org.apache.oodt.cas.resource.properties");
-            LOG.log(Level.INFO,
+            LOG.info(
                     "Loading Resource Manager Configuration Properties from: ["
                             + configFile + "]");
             try {
                 System.getProperties().load(
                         new FileInputStream(new File(configFile)));
             } catch (Exception e) {
-                LOG.log(Level.INFO,
+                LOG.info(
                         "Error loading configuration properties from: ["
                                 + configFile + "]");
             }
@@ -238,7 +238,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
         argList.add(XmlRpcStructFactory.getXmlRpcJob(exec));
         argList.add(in.write());
 
-        LOG.log(Level.FINEST, argList.toString());
+        LOG.info(argList.toString());
 
         String jobId;
 

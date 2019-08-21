@@ -24,11 +24,11 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.io.DirectorySelector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -47,8 +47,8 @@ public class XMLRepositoryManagerFactory implements RepositoryManagerFactory {
     private List<String> productTypeDirList = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger
-            .getLogger(XMLRepositoryManagerFactory.class.getName());
+    private static final Logger logger = LoggerFactory
+            .getLogger(XMLRepositoryManagerFactory.class);
 
     /**
      * <p>
@@ -87,7 +87,7 @@ public class XMLRepositoryManagerFactory implements RepositoryManagerFactory {
             			productTypeDirList.addAll( dirsel.traverseDir(new File(new URI(rootDir))) );
             			
             		} catch (URISyntaxException e) {
-            			LOG.log(Level.WARNING, "URISyntaxException when traversing directory: "+rootDir);
+            			logger.warn("URISyntaxException when traversing directory: "+rootDir, e);
             		}
             	}        		
 
@@ -96,9 +96,9 @@ public class XMLRepositoryManagerFactory implements RepositoryManagerFactory {
                 productTypeDirList = Arrays.asList(dirUris);
             }
             
-            LOG.log(Level.FINE,"Collecting XML policies from the following directories:");
+            logger.info("Collecting XML policies from the following directories:");
             for (String pdir : productTypeDirList) {
-            	LOG.log(Level.FINE, pdir);
+            	logger.info(pdir);
             }
             
         }
@@ -119,9 +119,7 @@ public class XMLRepositoryManagerFactory implements RepositoryManagerFactory {
 
             return repositoryManager;
         } else {
-            LOG
-                    .log(
-                            Level.WARNING,
+            logger.warn(
                             "Cannot create XML Repository Manager: no product type dir uris specified: value: "
                                     + System
                                             .getProperty("org.apache.oodt.cas.filemgr.repositorymgr.dirs"));

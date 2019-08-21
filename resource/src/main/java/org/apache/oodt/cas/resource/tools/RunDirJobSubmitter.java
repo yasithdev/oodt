@@ -26,6 +26,8 @@ import org.apache.oodt.cas.resource.structs.NameValueJobInput;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 import org.apache.oodt.cas.resource.util.JobBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,8 +35,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -50,7 +50,7 @@ import java.util.logging.Logger;
 public final class RunDirJobSubmitter {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(RunDirJobSubmitter.class
+    private static final Logger LOG = LoggerFactory.getLogger(RunDirJobSubmitter.class
             .getName());
 
     /* our res mgr client */
@@ -116,7 +116,7 @@ public final class RunDirJobSubmitter {
                 jobInput.setNameValuePair("runDirName", line);
 
                 jobId = submitJob(job, jobInput);
-                LOG.log(Level.INFO, "Job Submitted: id: [" + jobId + "]");
+                LOG.info("Job Submitted: id: [" + jobId + "]");
             }
 
             in.close();

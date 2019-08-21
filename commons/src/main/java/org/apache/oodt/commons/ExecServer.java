@@ -278,7 +278,7 @@ public class ExecServer {
 	 */
 	public String getServerStatus() {
 		// Update the status document with the current log.
-	  for (Object o : LogInit.MEMORY_LOGGER.getMessages()) {
+	  for (Object o : LogInit.MEMORY_LOG.getMessages()) {
 		String message = (String) o;
 		Element messageElement = statusDocument.createElement("message");
 		messageElement.setAttribute("xml:space", "preserve");

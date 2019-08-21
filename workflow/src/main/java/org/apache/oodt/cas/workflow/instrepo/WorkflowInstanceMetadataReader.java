@@ -23,6 +23,8 @@ package org.apache.oodt.cas.workflow.instrepo;
 import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
 import org.apache.oodt.commons.exceptions.CommonsException;
 import org.apache.oodt.commons.xml.DOMUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -33,8 +35,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -53,7 +53,7 @@ public final class WorkflowInstanceMetadataReader implements
         WorkflowInstanceMetMapKeys {
 
     /* our log stream */
-    private static Logger LOG = Logger
+    private static Logger LOG = LoggerFactory
             .getLogger(WorkflowInstanceMetadataReader.class.getName());
 
     private WorkflowInstanceMetadataReader() throws InstantiationException {
@@ -121,7 +121,7 @@ public final class WorkflowInstanceMetadataReader implements
         try {
             xmlInputStream = new File(xmlFile).toURL().openStream();
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
+            LOG.warn(
                     "IOException when getting input stream from [" + xmlFile
                             + "]: returning null document root");
             return null;
@@ -134,7 +134,7 @@ public final class WorkflowInstanceMetadataReader implements
             parser = factory.newDocumentBuilder();
             document = parser.parse(inputSource);
         } catch (Exception e) {
-            LOG.warning("Unable to parse xml file [" + xmlFile + "]."
+            LOG.warn("Unable to parse xml file [" + xmlFile + "]."
                     + "Reason is [" + e + "]");
             return null;
         }

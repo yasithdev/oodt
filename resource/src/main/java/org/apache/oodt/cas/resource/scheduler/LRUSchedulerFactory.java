@@ -18,16 +18,14 @@
 
 package org.apache.oodt.cas.resource.scheduler;
 
-//JAVA imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 //OODT imports
 import org.apache.oodt.cas.resource.queuerepo.XmlQueueRepositoryFactory;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 import org.apache.oodt.cas.resource.jobqueue.JobQueue;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author woollard
@@ -41,8 +39,8 @@ import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
  */
 public class LRUSchedulerFactory implements SchedulerFactory {
 
-	private static final Logger LOG = Logger
-			.getLogger(LRUSchedulerFactory.class.getName());
+	private static final Logger LOG = LoggerFactory
+			.getLogger(LRUSchedulerFactory.class);
 
 	/*
 	 * a list of URIs pointing to directories that have the
@@ -80,7 +78,7 @@ public class LRUSchedulerFactory implements SchedulerFactory {
 							.getQueueRepositoryFromFactory(
 									queueRepoFactoryClassStr).loadQueues());
 		} catch (Exception e) {
-			LOG.log(Level.SEVERE, "Failed to create queue manager : "
+			LOG.error("Failed to create queue manager : "
 					+ e.getMessage(), e);
 			queueManager = null;
 		}

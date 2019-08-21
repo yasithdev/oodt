@@ -20,13 +20,13 @@ package org.apache.oodt.cas.metadata;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -43,7 +43,7 @@ public abstract class AbstractMetExtractor implements MetExtractor {
 
     protected MetExtractorConfigReader reader;
 
-    protected static final Logger LOG = Logger
+    protected static final Logger LOG = LoggerFactory
             .getLogger(AbstractMetExtractor.class.getName());
 
     public AbstractMetExtractor(MetExtractorConfigReader reader) {
@@ -183,8 +183,8 @@ public abstract class AbstractMetExtractor implements MetExtractor {
         try {
             return new File(new URI(url.toExternalForm()));
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Exception constructing file from uri: ["
-                    + url + "]: Message: " + e.getMessage());
+            LOG.warn("Exception constructing file from uri: ["
+                    + url + "]: Message: " + e.getMessage(), e);
             return null;
         }
     }
@@ -193,8 +193,8 @@ public abstract class AbstractMetExtractor implements MetExtractor {
         try {
             return f.getCanonicalFile();
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Exception get canonical file for file : ["
-                    + f + "]: Message: " + e.getMessage());
+            LOG.warn("Exception get canonical file for file : ["
+                    + f + "]: Message: " + e.getMessage(), e);
             return null;
         }
     }

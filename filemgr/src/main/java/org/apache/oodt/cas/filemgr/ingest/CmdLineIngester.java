@@ -19,25 +19,24 @@
 package org.apache.oodt.cas.filemgr.ingest;
 
 //OODT imports
+import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.IngestException;
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 //JDK imports
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -51,7 +50,7 @@ import java.util.logging.Logger;
 public class CmdLineIngester extends StdIngester {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(CmdLineIngester.class
+    private static final Logger logger = LoggerFactory.getLogger(CmdLineIngester.class
             .getName());
 
     public CmdLineIngester(String serviceFactory) {
@@ -144,7 +143,7 @@ public class CmdLineIngester extends StdIngester {
                 prodFiles.add(line);
             }
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Error reading prod file: line: [" + line
+            logger.warn("Error reading prod file: line: [" + line
                     + "]: Message: " + e.getMessage(), e);
         }
 

@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -39,6 +37,8 @@ import org.apache.oodt.cas.product.jaxrs.exceptions.InternalServerErrorException
 import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
 import org.apache.oodt.cas.product.jaxrs.resources.MetadataResource;
 import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class that zips up a {@link ProductResource}, including the product's
@@ -48,7 +48,7 @@ import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
  */
 public class ProductZipper
 {
-  private static final Logger LOGGER = Logger.getLogger(ProductZipper.class
+  private static final Logger LOG = LoggerFactory.getLogger(ProductZipper.class
     .getName());
 
   /**
@@ -67,7 +67,7 @@ public class ProductZipper
       {
         String message = "Unable to create the working directory ("
           + workingDir.getAbsolutePath() + ") to build the zip file.";
-        LOGGER.log(Level.FINE, message);
+        LOG.info(message);
         throw new IOException(message);
       }
 
@@ -79,7 +79,7 @@ public class ProductZipper
         String message = "Unable to delete an existing zip file ("
           + file.getAbsolutePath()
           + ") before creating a new zip file with the same name.";
-        LOGGER.log(Level.FINE, message);
+        LOG.info(message);
         throw new IOException(message);
       }
 
@@ -130,20 +130,20 @@ public class ProductZipper
     {
       String message =
         "Problem with the data store URI(s) for the product's reference(s).";
-      LOGGER.log(Level.FINE, message, e);
+      LOG.info(message, e);
       throw new NotFoundException(message + " " + e.getMessage());
     }
     catch (ZipException e)
     {
       String message = "Unable to create a zip archive of the product.";
-      LOGGER.log(Level.FINE, message, e);
+      LOG.info(message, e);
       throw new InternalServerErrorException(message + " " + e.getMessage());
     }
     catch (IOException e)
     {
       String message = "Encountered I/O problems while trying to create a zip "
         + "archive of the product.";
-      LOGGER.log(Level.FINE, message, e);
+      LOG.info(message, e);
       throw new InternalServerErrorException(message + " " + e.getMessage());
     }
   }

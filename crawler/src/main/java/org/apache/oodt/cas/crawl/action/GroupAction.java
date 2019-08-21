@@ -57,7 +57,7 @@ public class GroupAction extends CrawlerAction {
             }
          } catch (Exception e) {
             allSucceeded = false;
-            LOG.warning("Failed to perform crawler action : " + e.getMessage());
+            LOG.warn("Failed to perform crawler action : " + e.getMessage());
          }
 
       }

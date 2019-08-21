@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -33,6 +32,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.pagination.PaginationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 /**
@@ -53,7 +54,7 @@ public class SolrCatalog implements Catalog {
 	// Class responsible for interacting with the Solr server
 	SolrClient solrClient;
 
-	private static final Logger LOG = Logger.getLogger(SolrCatalog.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(SolrCatalog.class.getName());
 
 	public SolrCatalog(String solrUrl, ProductIdGenerator productIdGenerator, ProductSerializer productSerializer) {
 		this.productIdGenerator = productIdGenerator;

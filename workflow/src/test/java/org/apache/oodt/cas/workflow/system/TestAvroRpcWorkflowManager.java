@@ -21,6 +21,8 @@ import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.util.AvroTypeFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,8 +30,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TestAvroRpcWorkflowManager extends TestCase {
 
@@ -39,7 +39,7 @@ public class TestAvroRpcWorkflowManager extends TestCase {
 
     private String luceneCatLoc;
 
-    private static final Logger LOG = Logger
+    private static final Logger LOG = LoggerFactory
             .getLogger(TestXmlRpcWorkflowManager.class.getName());
 
     public void testGetWorkflowInstances() {
@@ -101,14 +101,14 @@ public class TestAvroRpcWorkflowManager extends TestCase {
             luceneCatLoc = !luceneCatLoc.endsWith("/") ? luceneCatLoc + "/"
                     : luceneCatLoc;
             luceneCatLoc += "repo";
-            LOG.log(Level.INFO, "Lucene instance repository: [" + luceneCatLoc + "]");
+            LOG.info("Lucene instance repository: [" + luceneCatLoc + "]");
         } catch (Exception e) {
             fail(e.getMessage());
         }
 
         if (new File(luceneCatLoc).exists()) {
             // blow away lucene cat
-            LOG.log(Level.INFO, "Removing workflow instance repository: ["
+            LOG.info("Removing workflow instance repository: ["
                     + luceneCatLoc + "]");
             try {
                 FileUtils.deleteDirectory(new File(luceneCatLoc));

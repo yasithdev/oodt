@@ -26,16 +26,16 @@ import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.system.extern.AvroRpcBatchStub;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AvroRpcBatchMgrProxy extends Thread implements Runnable {
 
-    private static final Logger LOG = Logger.getLogger(XmlRpcBatchMgrProxy.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(XmlRpcBatchMgrProxy.class.getName());
 
     private JobSpec jobSpec;
 
@@ -61,7 +61,7 @@ public class AvroRpcBatchMgrProxy extends Thread implements Runnable {
             this.proxy = (AvroRpcBatchStub) SpecificRequestor.getClient(AvroRpcBatchStub.class, client);
         } catch (IOException e) {
             e.printStackTrace();
-            LOG.log(Level.SEVERE, "Failed connection with the server.", e);
+            LOG.error("Failed connection with the server.", e);
         }
 
 
@@ -83,7 +83,7 @@ public class AvroRpcBatchMgrProxy extends Thread implements Runnable {
             this.client = new NettyTransceiver(new InetSocketAddress(remoteHost.getIpAddr().getPort()));
             this.proxy = (AvroRpcBatchStub) SpecificRequestor.getClient(AvroRpcBatchStub.class, client);
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Failed connection with the server.", e);
+            LOG.error("Failed connection with the server.", e);
         }
 
 
@@ -107,7 +107,7 @@ public class AvroRpcBatchMgrProxy extends Thread implements Runnable {
             this.client = new NettyTransceiver(new InetSocketAddress(remoteHost.getIpAddr().getPort()));
             this.proxy = (AvroRpcBatchStub) SpecificRequestor.getClient(AvroRpcBatchStub.class, client);
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Failed connection with the server.", e);
+            LOG.error("Failed connection with the server.", e);
         }
 
         boolean result = false;
@@ -120,7 +120,7 @@ public class AvroRpcBatchMgrProxy extends Thread implements Runnable {
             else
                 throw new Exception("batchstub.executeJob returned false");
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Job execution failed for jobId '" + jobSpec.getJob().getId() + "' : " + e.getMessage(), e);
+            LOG.error("Job execution failed for jobId '" + jobSpec.getJob().getId() + "' : " + e.getMessage(), e);
             parent.jobFailure(jobSpec);
         }finally {
             parent.notifyMonitor(remoteHost, jobSpec);

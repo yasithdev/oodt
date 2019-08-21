@@ -29,9 +29,8 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 
@@ -43,7 +42,7 @@ import java.util.logging.Logger;
  */
 public class QueueMuxScheduler implements Scheduler {
 
-    private static final Logger LOG = Logger.getLogger(QueueMuxScheduler.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(QueueMuxScheduler.class.getName());
 
     private BackendManager backend;
     private JobQueue queue;
@@ -88,15 +87,15 @@ public class QueueMuxScheduler implements Scheduler {
                 JobSpec job = null;
                 try {
                     job = queue.getNextJob();
-                    LOG.log(Level.INFO, "Scheduling job: ["+ job.getJob().getId()+ "] for execution");
+                    LOG.info("Scheduling job: ["+ job.getJob().getId()+ "] for execution");
                     schedule(job);
                 } catch (SchedulerException se) {
-                    LOG.log(Level.WARNING,"Error occured scheduling job: "+se.getLocalizedMessage());
+                    LOG.warn("Error occured scheduling job: "+se.getLocalizedMessage());
                     try {
                         queue.requeueJob(job);
                     } catch (JobQueueException je) {
-                        LOG.log(Level.WARNING,"Error requeueing job: "+je.getLocalizedMessage());
-                        LOG.log(Level.WARNING,"Previous error caused by: "+se.getLocalizedMessage());
+                        LOG.warn("Error requeueing job: "+je.getLocalizedMessage());
+                        LOG.warn("Previous error caused by: "+se.getLocalizedMessage());
                     }
                 }
             }
@@ -115,7 +114,7 @@ public class QueueMuxScheduler implements Scheduler {
         try {
             return backend.getScheduler(queue).schedule(spec);
         } catch (QueueManagerException e) {
-            LOG.log(Level.WARNING,"Exception occuered: "+e.getLocalizedMessage());
+            LOG.warn("Exception occuered: "+e.getLocalizedMessage());
             throw new SchedulerException(e);
         }
     }
@@ -167,7 +166,7 @@ public class QueueMuxScheduler implements Scheduler {
         try {
             return backend.getScheduler(queue).nodeAvailable(spec);
         } catch (QueueManagerException e) {
-            LOG.log(Level.WARNING,"Exception occuered: "+e.getLocalizedMessage());
+            LOG.warn("Exception occuered: "+e.getLocalizedMessage());
             throw new SchedulerException(e);
         }
     }

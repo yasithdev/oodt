@@ -27,10 +27,10 @@ import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.TaskJobInput;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetKeys,
     WorkflowStatus {
 
-  private static final Logger LOG = Logger.getLogger(ResourceRunner.class
+  private static final Logger LOG = LoggerFactory.getLogger(ResourceRunner.class
       .getName());
 
   protected static final String DEFAULT_QUEUE_NAME = "high";
@@ -89,9 +89,9 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
     try {
       this.currentJobId = rClient.submitJob(workflowTaskJob, in);
     } catch (JobExecutionException e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "Job execution exception using resource manager to execute job: Message: "
-              + e.getMessage());
+              + e.getMessage(), e);
     }
 
   }
@@ -133,8 +133,8 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
     try {
       return rClient.isJobComplete(jobId);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Exception checking completion status for job: ["
-          + jobId + "]: Messsage: " + e.getMessage());
+      LOG.warn("Exception checking completion status for job: ["
+          + jobId + "]: Messsage: " + e.getMessage(), e);
       return false;
     }
   }
@@ -142,7 +142,7 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
   protected boolean stopJob(String jobId) {
     if (this.rClient != null && this.currentJobId != null) {
       if (!this.rClient.killJob(this.currentJobId)) {
-        LOG.log(Level.WARNING, "Attempt to kill " + "current resmgr job: ["
+        LOG.warn("Attempt to kill " + "current resmgr job: ["
             + this.currentJobId + "]: failed");
         return false;
       } else {

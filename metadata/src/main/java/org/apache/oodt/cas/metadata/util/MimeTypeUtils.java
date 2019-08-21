@@ -25,8 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //APACHE imports
 import org.apache.tika.Tika;
@@ -36,6 +34,8 @@ import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.mime.MimeTypesFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -65,7 +65,7 @@ public final class MimeTypeUtils {
     public final static String MIME_FILE_RES_PATH = "tika-mimetypes.xml";
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(MimeTypeUtils.class
+    private static final Logger LOG = LoggerFactory.getLogger(MimeTypeUtils.class
             .getName());
 
     public MimeTypeUtils() {
@@ -87,7 +87,7 @@ public final class MimeTypeUtils {
     		this.mimeMagic = magic;
     		this.tika = new Tika(new DefaultDetector(this.mimeTypes));
     	}catch (Exception e) {
-    		LOG.log(Level.SEVERE, "Failed to load MimeType Registry : " + e.getMessage(), e);
+    		LOG.error("Failed to load MimeType Registry : " + e.getMessage(), e);
     	}
     }
 
@@ -227,7 +227,7 @@ public final class MimeTypeUtils {
 
     /**
      * Facade interface to Tika's underlying
-     * {@link tika.detect(String)} method.
+     * {@code tika.detect(String)} method.
      *
      * @param url
      *            A string representation of the document {@link URL} to sense
@@ -244,7 +244,7 @@ public final class MimeTypeUtils {
     }
 
     /**
-     * A facade interface to Tika's underlying {@link org.apache.tika.tika.detect(String)}
+     * A facade interface to Tika's underlying {@code tika.detect(String)}
      * method.
      *
      * @param name
@@ -257,7 +257,7 @@ public final class MimeTypeUtils {
         try {
             return tika.detect(name);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage());
             return null;
         }
     }
@@ -276,7 +276,7 @@ public final class MimeTypeUtils {
             return tika.detect(f);
         } catch (Exception e) {
             System.err.println("\n\n\n");
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage());
             System.err.println("\n\n\n");
             return null;
         }
@@ -284,7 +284,7 @@ public final class MimeTypeUtils {
 
     /**
      * Utility method to act as a facade to
-     * {@link MimeTypes#getMimeType(byte[])}.
+     * {@code MimeTypes.getMimeType(byte[])}.
      *
      * @param data
      *            The byte data to get the {@link MimeType} for.
@@ -303,7 +303,7 @@ public final class MimeTypeUtils {
     	try {
     		return this.mimeTypes.forName(mimeType).getDescription();
     	}catch (Exception e) {
-    		LOG.log(Level.WARNING, "Failed to get description for mimetype " 
+    		LOG.warn("Failed to get description for mimetype "
     				+ mimeType + " : " + e.getMessage());
     		return null;
     	}
@@ -318,7 +318,7 @@ public final class MimeTypeUtils {
                 return null;
             }
     	}catch (Exception e) {
-    		LOG.log(Level.WARNING, "Failed to get super-type for mimetype " 
+    		LOG.warn("Failed to get super-type for mimetype "
     				+ mimeType + " : " + e.getMessage());
     		return null;
     	}

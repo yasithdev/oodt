@@ -22,8 +22,6 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -38,6 +36,8 @@ import org.apache.oodt.cas.product.jaxrs.exceptions.InternalServerErrorException
 import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
 import org.apache.oodt.cas.product.jaxrs.resources.ReferenceResource;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -52,7 +52,7 @@ import org.w3c.dom.Element;
 public class ProductRssWriter extends RssWriter
   implements MessageBodyWriter<ProductResource>
 {
-  private static final Logger LOGGER = Logger.getLogger(ProductRssWriter.class
+  private static final Logger LOG = LoggerFactory.getLogger(ProductRssWriter.class
     .getName());
 
 
@@ -142,7 +142,7 @@ public class ProductRssWriter extends RssWriter
     catch (ParserConfigurationException e)
     {
       String message = "Unable to create RSS XML document for RSS response.";
-      LOGGER.log(Level.WARNING, message, e);
+      LOG.warn(message, e);
       throw new InternalServerErrorException(message);
     }
   }

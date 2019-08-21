@@ -21,8 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -45,6 +43,8 @@ import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
 import org.apache.oodt.cas.product.jaxrs.resources.ReferenceResource;
 import org.apache.oodt.cas.product.jaxrs.resources.TransferResource;
 import org.apache.oodt.cas.product.jaxrs.resources.TransfersResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service class that handles HTTP requests and returns file manager entities such as {@link
@@ -55,7 +55,7 @@ import org.apache.oodt.cas.product.jaxrs.resources.TransfersResource;
  * @version $Revision$
  */
 public class CasProductJaxrsService {
-  private static final Logger LOGGER = Logger.getLogger(CasProductJaxrsService.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(CasProductJaxrsService.class.getName());
 
   // The servlet context, which is used to retrieve context parameters.
   @Context private ServletContext context;
@@ -98,7 +98,7 @@ public class CasProductJaxrsService {
     } catch (Exception e) {
       // Just for Logging Purposes
       String message = "Unable to find the requested resource.";
-      LOGGER.log(Level.FINE, message, e);
+      LOG.info(message, e);
 
       throw new NotFoundException(e.getMessage());
     }
@@ -144,7 +144,7 @@ public class CasProductJaxrsService {
     } catch (Exception e) {
       // Just for Logging Purposes
       String message = "Unable to find the requested resource.";
-      LOGGER.log(Level.FINE, message, e);
+      LOG.info(message, e);
 
       throw new NotFoundException(e.getMessage());
     }
@@ -218,7 +218,7 @@ public class CasProductJaxrsService {
     } catch (Exception e) {
       // Just for Logging Purposes
       String message = "Unable to find the requested resource.";
-      LOGGER.log(Level.FINE, message, e);
+      LOG.info(message, e);
 
       throw new NotFoundException(e.getMessage());
     }
@@ -264,7 +264,7 @@ public class CasProductJaxrsService {
     } catch (Exception e) {
       // Just for Logging Purposes
       String message = "Unable to find the requested resource.";
-      LOGGER.log(Level.FINE, message, e);
+      LOG.info(message, e);
 
       throw new NotFoundException(e.getMessage());
     }
@@ -308,7 +308,7 @@ public class CasProductJaxrsService {
     } catch (Exception e) {
       // Just for Logging Purposes
       String message = "Unable to find the requested resource.";
-      LOGGER.log(Level.FINE, message, e);
+      LOG.info(message, e);
 
       throw new NotFoundException(e.getMessage());
     }
@@ -327,7 +327,7 @@ public class CasProductJaxrsService {
     }
 
     String message = ErrorType.CAS_PRODUCT_EXCEPTION_FILEMGR_WORKING_DIR_UNAVILABLE.getErrorType();
-    LOGGER.log(Level.WARNING, message);
+    LOG.warn(message);
     throw new CasProductException(message);
   }
 
@@ -345,7 +345,7 @@ public class CasProductJaxrsService {
     }
 
     String message = ErrorType.CAS_PRODUCT_EXCEPTION_FILEMGR_CLIENT_UNAVILABLE.getErrorType();
-    LOGGER.log(Level.WARNING, message);
+    LOG.warn(message);
     throw new CasProductException(message);
   }
 }

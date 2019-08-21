@@ -23,6 +23,8 @@ package org.apache.oodt.product.handlers.ofsn;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.product.ProductException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -30,8 +32,6 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //APACHE imports
 //OODT imports
@@ -47,12 +47,12 @@ import java.util.logging.Logger;
 public class MD5GetHandler implements OFSNGetHandler {
 
   private MessageDigest md = null;
-  private static Logger LOG = Logger.getLogger(MD5GetHandler.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(MD5GetHandler.class.getName());
   public MD5GetHandler() throws InstantiationException {
     try {
       this.md = MessageDigest.getInstance("MD5");
     } catch (NoSuchAlgorithmException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       throw new InstantiationException(e.getMessage());
     }
   }
@@ -88,7 +88,7 @@ public class MD5GetHandler implements OFSNGetHandler {
       is.read(retBytes, 0, length);
       return retBytes;
     } catch (IOException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       throw new ProductException("Error reading bytes from file: [" + filepath
           + "] MD5: Message: " + e.getMessage());
     }
@@ -107,7 +107,7 @@ public class MD5GetHandler implements OFSNGetHandler {
           filepath)));
       return hash.getBytes().length;
     } catch (IOException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       return -1;
     }
   }

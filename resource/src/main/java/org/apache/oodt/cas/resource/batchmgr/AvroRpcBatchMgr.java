@@ -26,19 +26,19 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AvroRpcBatchMgr implements Batchmgr {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(XmlRpcBatchMgr.class
+    private static final Logger LOG = LoggerFactory.getLogger(XmlRpcBatchMgr.class
             .getName());
 
     private Monitor mon;
@@ -98,7 +98,7 @@ public class AvroRpcBatchMgr implements Batchmgr {
         try {
             spec = repo.getJobById(jobId);
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Unable to get job by id: [" + jobId
+            LOG.warn("Unable to get job by id: [" + jobId
                     + "] to kill it: Message: " + e.getMessage());
             return false;
         }
@@ -132,7 +132,7 @@ public class AvroRpcBatchMgr implements Batchmgr {
         try {
             repo.updateJob(spec);
         } catch (JobRepositoryException e) {
-            LOG.log(Level.WARNING, "Error set job completion status for job: ["
+            LOG.warn("Error set job completion status for job: ["
                     + spec.getJob().getId() + "]: Message: " + e.getMessage());
         }
     }
@@ -153,7 +153,7 @@ public class AvroRpcBatchMgr implements Batchmgr {
         try {
             repo.updateJob(spec);
         } catch (JobRepositoryException e) {
-            LOG.log(Level.WARNING, "Error set job completion status for job: ["
+            LOG.warn("Error set job completion status for job: ["
                     + spec.getJob().getId() + "]: Message: " + e.getMessage());
         }
     }
@@ -164,7 +164,7 @@ public class AvroRpcBatchMgr implements Batchmgr {
         try {
             repo.updateJob(spec);
         } catch (JobRepositoryException e) {
-            LOG.log(Level.WARNING, "Error setting job killed status for job: ["
+            LOG.warn("Error setting job killed status for job: ["
                     + spec.getJob().getId() + "]: Message: " + e.getMessage());
         }
     }
@@ -174,7 +174,7 @@ public class AvroRpcBatchMgr implements Batchmgr {
         try {
             repo.updateJob(spec);
         } catch (JobRepositoryException e) {
-            LOG.log(Level.WARNING,
+            LOG.warn(
                     "Error setting job execution status for job: ["
                             + spec.getJob().getId() + "]: Message: "
                             + e.getMessage());

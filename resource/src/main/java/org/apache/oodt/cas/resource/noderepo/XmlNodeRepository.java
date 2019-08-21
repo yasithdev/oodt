@@ -21,6 +21,8 @@ package org.apache.oodt.cas.resource.noderepo;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.util.XmlStructFactory;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -33,8 +35,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //JDK imports
 //DOM imports
@@ -51,7 +51,7 @@ import java.util.logging.Logger;
  */
 public class XmlNodeRepository implements NodeRepository {
 
-	private static final Logger LOG = Logger.getLogger(XmlNodeRepository.class
+	private static final Logger LOG = LoggerFactory.getLogger(XmlNodeRepository.class
 			.getName());
 
 	private static FileFilter nodesXmlFilter = new FileFilter() {
@@ -89,7 +89,7 @@ public class XmlNodeRepository implements NodeRepository {
 							.getDocumentRoot(new FileInputStream(
 								nodesFile));
 					  } catch (FileNotFoundException e) {
-						LOG.log(Level.SEVERE, e.getMessage());
+						LOG.error(e.getMessage());
 						return null;
 					  }
 
@@ -105,7 +105,7 @@ public class XmlNodeRepository implements NodeRepository {
 				  }
 				}
 			} catch (URISyntaxException e) {
-				LOG.log(Level.WARNING, "DirUri: " + dirUri
+				LOG.warn("DirUri: " + dirUri
 						+ " is not a directory: skipping node loading for it.",
 						e);
 			}

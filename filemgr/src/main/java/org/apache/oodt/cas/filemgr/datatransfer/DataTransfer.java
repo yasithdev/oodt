@@ -20,6 +20,7 @@ package org.apache.oodt.cas.filemgr.datatransfer;
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.sis.storage.DataStore;
 
 //JDK imports
 import java.io.File;

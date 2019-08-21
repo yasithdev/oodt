@@ -24,6 +24,8 @@ import org.apache.oodt.cas.crawl.status.IngestStatus;
 import org.apache.oodt.cas.filemgr.ingest.Ingester;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -33,8 +35,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -50,8 +50,7 @@ import java.util.logging.Logger;
 public abstract class ProductCrawler extends ProductCrawlerBean {
 
    /* our log stream */
-   protected static Logger LOG = Logger.getLogger(ProductCrawler.class
-         .getName());
+   protected static Logger LOG = LoggerFactory.getLogger(ProductCrawler.class);
 
    // filter to only find directories when doing a listFiles
    protected static FileFilter DIR_FILTER = new FileFilter() {
@@ -99,7 +98,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
       stack.push(dirRoot.isDirectory() ? dirRoot : dirRoot.getParentFile());
       while (!stack.isEmpty()) {
          File dir = (File) stack.pop();
-         LOG.log(Level.INFO, "Crawling " + dir);
+         LOG.info("Crawling " + dir);
 
          File[] productFiles;
          productFiles = isCrawlForDirs() ? dir.listFiles(DIR_FILTER) : dir.listFiles(FILE_FILTER);
@@ -124,11 +123,11 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
    }
 
    public IngestStatus handleFile(File product) {
-      LOG.log(Level.INFO, "Handling file " + product);
+      LOG.info("Handling file " + product);
 
       // Check preconditions.
       if (!passesPreconditions(product)) {
-         LOG.log(Level.WARNING,
+         LOG.warn(
                "Failed to pass preconditions for ingest of product: ["
                      + product.getAbsolutePath() + "]");
          return createIngestStatus(product,
@@ -142,7 +141,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
       try {
          productMetadata.replaceMetadata(getMetadataForProduct(product));
       } catch (Exception e) {
-         LOG.log(Level.SEVERE,
+         LOG.error(
                "Failed to get metadata for product : " + e.getMessage(), e);
          performPostIngestOnFailActions(product, productMetadata);
          return createIngestStatus(product,
@@ -154,7 +153,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
       try {
          product = renameProduct(product, productMetadata);
       } catch (Exception e) {
-         LOG.log(Level.SEVERE,
+         LOG.error(
                "Failed to rename product : " + e.getMessage(), e);
          performPostIngestOnFailActions(product, productMetadata);
          return createIngestStatus(product, IngestStatus.Result.FAILURE,
@@ -166,7 +165,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
 
       // Check that metadata contains required metadata.
       if (!containsRequiredMetadata(productMetadata)) {
-         LOG.log(Level.SEVERE, "Missing required metadata for product '"
+         LOG.error("Missing required metadata for product '"
                + product + "'");
          performPostIngestOnFailActions(product, productMetadata);
          return createIngestStatus(product, IngestStatus.Result.FAILURE,
@@ -182,7 +181,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
 
       // Check if ingest has been turned off.
       if (isSkipIngest()) {
-         LOG.log(Level.INFO, "Skipping ingest of product: ["
+         LOG.error("Skipping ingest of product: ["
                + product.getAbsolutePath() + "]");
          return createIngestStatus(product, IngestStatus.Result.SKIPPED,
                "Crawler ingest turned OFF");
@@ -193,7 +192,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
 
       // On Successful Ingest.
       if (ingestSuccess) {
-         LOG.log(Level.INFO, "Successful ingest of product: ["
+         LOG.info("Successful ingest of product: ["
                + product.getAbsolutePath() + "]");
          performPostIngestOnSuccessActions(product, productMetadata);
          return createIngestStatus(product,
@@ -201,7 +200,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
 
       // On Failed Ingest.
       } else {
-         LOG.log(Level.WARNING, "Failed to ingest product: ["
+         LOG.warn("Failed to ingest product: ["
                + product.getAbsolutePath()
                + "]: performing postIngestFail actions");         
          performPostIngestOnFailActions(product, productMetadata);
@@ -254,7 +253,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
          Metadata productMetadata) {
       for (String reqMetKey : getRequiredMetadata()) {
          if (!productMetadata.containsKey(reqMetKey)) {
-            LOG.log(Level.WARNING, "Missing required metadata field "
+            LOG.warn("Missing required metadata field "
                   + reqMetKey);
             return false;
          }
@@ -301,15 +300,15 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
 
    @VisibleForTesting boolean ingest(File product, Metadata productMetdata) {
       try {
-         LOG.log(Level.INFO, "ProductCrawler: Ready to ingest product: ["
+         LOG.info("ProductCrawler: Ready to ingest product: ["
                + product + "]: ProductType: ["
                + productMetdata.getMetadata(PRODUCT_TYPE) + "]");
          String productId = ingester.ingest(new URL(getFilemgrUrl()),
                product, productMetdata);
-         LOG.log(Level.INFO, "Successfully ingested product: [" + product
+         LOG.info("Successfully ingested product: [" + product
                + "]: product id: " + productId);
       } catch (Exception e) {
-         LOG.log(Level.WARNING,
+         LOG.warn(
                "ProductCrawler: Exception ingesting product: [" + product
                      + "]: Message: " + e.getMessage()
                      + ": attempting to continue crawling", e);
@@ -355,7 +354,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
       boolean allSucceeded = true;
       for (CrawlerAction action : actions) {
          try {
-            LOG.log(Level.INFO, "Performing action (id = " + action.getId()
+            LOG.info("Performing action (id = " + action.getId()
                   + " : description = " + action.getDescription() + ")");
             if (!action.performAction(product, productMetadata)) {
                throw new Exception("Action (id = " + action.getId()
@@ -364,7 +363,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
             }
          } catch (Exception e) {
             allSucceeded = false;
-            LOG.log(Level.WARNING,
+            LOG.warn(
                   "Failed to perform crawler action : " + e.getMessage(), e);
          }
       }

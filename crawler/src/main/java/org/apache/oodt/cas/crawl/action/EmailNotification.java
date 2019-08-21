@@ -82,22 +82,22 @@ public class EmailNotification extends CrawlerAction {
                msg.addRecipient(Message.RecipientType.TO, new InternetAddress(
                      PathUtils.replaceEnvVariables(recipient.trim(), metadata),
                      ignoreInvalidAddresses));
-               LOG.fine("Recipient: "
+               LOG.info("Recipient: "
                      + PathUtils.replaceEnvVariables(recipient.trim(), metadata));
             } catch (AddressException ae) {
-               LOG.fine("Recipient: "
+               LOG.info("Recipient: "
                      + PathUtils.replaceEnvVariables(recipient.trim(), metadata));
-               LOG.warning(ae.getMessage());
+               LOG.warn(ae.getMessage());
             }
          }
-         LOG.fine("Subject: " + msg.getSubject());
-         LOG.fine("Message: "
+         LOG.info("Subject: " + msg.getSubject());
+         LOG.info("Message: "
                + new String(PathUtils.doDynamicReplacement(message, metadata)
                      .getBytes()));
          Transport.send(msg);
          return true;
       } catch (Exception e) {
-         LOG.severe(e.getMessage());
+         LOG.error(e.getMessage());
          return false;
       }
    }

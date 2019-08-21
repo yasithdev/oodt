@@ -23,14 +23,15 @@ import java.io.File;
 import java.io.FileFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
+import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 import org.apache.oodt.cas.resource.util.JobBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -44,7 +45,7 @@ import org.apache.oodt.cas.resource.util.JobBuilder;
 public final class JobSubmitter {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(JobSubmitter.class
+    private static final Logger LOG = LoggerFactory.getLogger(JobSubmitter.class
             .getName());
 
     /* our res mgr client */
@@ -70,11 +71,11 @@ public final class JobSubmitter {
             for (File jobFile : jobFiles) {
                 try {
                     String id = submitJobFile(jobFile);
-                    LOG.log(Level.INFO, "Job Submitted: id: [" + id + "]");
+                    LOG.info("Job Submitted: id: [" + id + "]");
 
                 } catch (Exception e) {
-                    LOG.log(Level.SEVERE, e.getMessage());
-                    LOG.log(Level.WARNING, "Exception submitting job file: ["
+                    LOG.error(e.getMessage());
+                    LOG.warn("Exception submitting job file: ["
                                            + jobFile + "]: Message: " + e.getMessage());
                 }
             }
@@ -125,7 +126,7 @@ public final class JobSubmitter {
             submitter.submitJobFiles(jobFileDirPath);
         } else {
             String jobId = submitter.submitJobFile(jobFilePath);
-            LOG.log(Level.INFO, "Job Submitted: id: [" + jobId + "]");
+            LOG.info("Job Submitted: id: [" + jobId + "]");
         }
 
     }
