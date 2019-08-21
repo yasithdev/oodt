@@ -33,6 +33,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,8 +44,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -69,7 +69,7 @@ public class TestXmlRpcWorkflowManagerClient {
 
   private static String luceneCatLoc;
 
-  private static final Logger LOG = Logger
+  private static final Logger LOG = LoggerFactory
       .getLogger(TestXmlRpcWorkflowManager.class.getName());
 
   private static final String catalogPath = new File("./target/instTestMetCat")
@@ -158,7 +158,7 @@ public class TestXmlRpcWorkflowManagerClient {
     try {
       client.sendEvent("long", new Metadata());
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       throw new RuntimeException(e);
     }
 
@@ -593,7 +593,7 @@ public class TestXmlRpcWorkflowManagerClient {
     }
     try {
       luceneCatLoc = Files.createTempDirectory("repo").toString();
-      LOG.log(Level.INFO, "Lucene instance repository: [" + luceneCatLoc + "]");
+      LOG.info("Lucene instance repository: [" + luceneCatLoc + "]");
     } catch (Exception e) {
       fail(e.getMessage());
     }
@@ -601,7 +601,7 @@ public class TestXmlRpcWorkflowManagerClient {
 
     if (new File(luceneCatLoc).exists()) {
       // blow away lucene cat
-      LOG.log(Level.INFO, "Removing workflow instance repository: ["
+      LOG.info("Removing workflow instance repository: ["
                           + luceneCatLoc + "]");
       try {
         FileUtils.deleteDirectory(new File(luceneCatLoc));
@@ -632,7 +632,7 @@ public class TestXmlRpcWorkflowManagerClient {
       wmgr = new XmlRpcWorkflowManager(WM_PORT);
       Thread.sleep(MILLIS);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       fail(e.getMessage());
     }
 
@@ -670,7 +670,7 @@ public class TestXmlRpcWorkflowManagerClient {
     try {
       wmgr.shutdown();
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       fail(e.getMessage());
     }
 
@@ -686,7 +686,7 @@ public class TestXmlRpcWorkflowManagerClient {
 
     if (new File(luceneCatLoc).exists()) {
       // blow away lucene cat
-      LOG.log(Level.INFO, "Removing workflow instance repository: ["
+      LOG.info("Removing workflow instance repository: ["
                           + luceneCatLoc + "]");
       try {
         FileUtils.deleteDirectory(new File(luceneCatLoc));

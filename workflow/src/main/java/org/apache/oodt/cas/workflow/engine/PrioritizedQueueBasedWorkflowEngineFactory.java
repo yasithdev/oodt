@@ -26,9 +26,8 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
 import org.apache.oodt.cas.workflow.structs.PrioritySorter;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -42,7 +41,7 @@ import java.util.logging.Logger;
  */
 public class PrioritizedQueueBasedWorkflowEngineFactory implements
     WorkflowEngineFactory {
-  private static Logger LOG = Logger.getLogger(PrioritizedQueueBasedWorkflowEngine.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(PrioritizedQueueBasedWorkflowEngine.class);
   private static final String MODEL_REPO_FACTORY_PROPERTY = "workflow.repo.factory";
 
   private static final String INSTANCE_REPO_FACTORY_PROPERTY = "workflow.engine.instanceRep.factory";
@@ -70,7 +69,7 @@ public class PrioritizedQueueBasedWorkflowEngineFactory implements
           getWorkflowLifecycle(), getEngineRunner(), getModelRepository(),
           getWaitSeconds());
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       return null;
     }
   }

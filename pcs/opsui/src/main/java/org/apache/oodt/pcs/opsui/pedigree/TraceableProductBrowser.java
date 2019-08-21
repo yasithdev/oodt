@@ -22,8 +22,6 @@ import java.io.File;
 import java.net.URI;
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -43,6 +41,8 @@ import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.util.ListModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -57,7 +57,7 @@ public class TraceableProductBrowser extends ProductBrowser {
 
   private static final long serialVersionUID = 5512878676145737818L;
 
-  private static final Logger LOG = Logger
+  private static final Logger LOG = LoggerFactory
       .getLogger(TraceableProductBrowser.class.getName());
 
   /**
@@ -135,8 +135,7 @@ public class TraceableProductBrowser extends ProductBrowser {
                 .getPercentInstance()
                 .format(fm.getFm().getRefPctTransferred(r))));
           } catch (DataTransferException e) {
-            LOG.log(
-                Level.WARNING,
+            LOG.warn(
                 "Unable to determine product reference size: Reason: "
                     + e.getMessage());
             refItem.add(new Label("ref_pct_transferred", "N/A"));

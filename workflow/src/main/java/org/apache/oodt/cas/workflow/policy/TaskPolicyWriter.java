@@ -6,6 +6,7 @@
 package org.apache.oodt.cas.workflow.policy;
 
 //OODT imports
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.workflow.repository.XMLWorkflowRepository;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
@@ -18,11 +19,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -40,7 +42,7 @@ public final class TaskPolicyWriter implements TaskPolicyMetKeys {
     private static final String TASKS_XML_FILE_NAME = "tasks.xml";
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(TaskPolicyWriter.class
+    private static final Logger LOG = LoggerFactory.getLogger(TaskPolicyWriter.class
             .getName());
 
     private TaskPolicyWriter() throws InstantiationException {
@@ -65,11 +67,11 @@ public final class TaskPolicyWriter implements TaskPolicyMetKeys {
         try {
             XMLUtils.writeXmlToStream(getTaskXmlDocument(taskSubsetMap),
                     new FileOutputStream(new File(taskXmlFileFullPath)));
-            LOG.log(Level.INFO, "Successfully updated task policy file: ["
+            LOG.info("Successfully updated task policy file: ["
                     + taskXmlFileFullPath + "]");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            LOG.log(Level.WARNING, "Unable to write task policy file: ["
+            LOG.warn("Unable to write task policy file: ["
                     + taskXmlFileFullPath + "]: file not found");
         }
 
@@ -175,7 +177,7 @@ public final class TaskPolicyWriter implements TaskPolicyMetKeys {
 
             return document;
         } catch (ParserConfigurationException pce) {
-            LOG.log(Level.WARNING, "Error generating tasks xml document!: "
+            LOG.warn("Error generating tasks xml document!: "
                     + pce.getMessage());
         }
 

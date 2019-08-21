@@ -17,9 +17,6 @@
 
 package org.apache.oodt.cas.resource.mux;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.oodt.cas.resource.jobqueue.JobQueue;
 import org.apache.oodt.cas.resource.jobqueue.JobStackJobQueueFactory;
 import org.apache.oodt.cas.resource.queuerepo.XmlQueueRepositoryFactory;
@@ -28,6 +25,8 @@ import org.apache.oodt.cas.resource.scheduler.Scheduler;
 import org.apache.oodt.cas.resource.scheduler.SchedulerFactory;
 import org.apache.oodt.cas.resource.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class acts as a factory for the whole queue-mux
@@ -37,7 +36,7 @@ import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
  */
 public class QueueMuxSchedulerFactory implements SchedulerFactory {
 
-    private static final Logger LOG = Logger.getLogger(QueueMuxSchedulerFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(QueueMuxSchedulerFactory.class.getName());
 
     BackendManager backend;
     QueueManager qManager;
@@ -52,7 +51,7 @@ public class QueueMuxSchedulerFactory implements SchedulerFactory {
         try {
             backend = GenericResourceManagerObjectFactory.getBackendRepositoryFromFactory(backRepo).load();
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE,"Error loading backend repository: "+e.getMessage(),e);
+            LOG.error("Error loading backend repository: "+e.getMessage(),e);
             backend = null;
         }
         //Load user-specified queue factory

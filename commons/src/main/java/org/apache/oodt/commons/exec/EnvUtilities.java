@@ -19,6 +19,9 @@
 package org.apache.oodt.commons.exec;
 
 //JDK imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -26,8 +29,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -41,7 +42,7 @@ import java.util.logging.Logger;
  */
 public final class EnvUtilities {
 
-    private static final Logger LOG = Logger.getLogger(EnvUtilities.class
+    private static final Logger LOG = LoggerFactory.getLogger(EnvUtilities.class
             .getName());
     public static final int INT = 4096;
 
@@ -89,7 +90,7 @@ public final class EnvUtilities {
      * bit more elegantly.
      * 
      * @deprecated
-     * @return A {@link Properites} object containing the user's current
+     * @return A {@link Properties} object containing the user's current
      *         environment variables.
      */
     public static Properties getEnvUsingWaitFor() {
@@ -104,8 +105,8 @@ public final class EnvUtilities {
             envProps = new Properties();
             envProps.load(preProcessInputStream(p.getInputStream()));
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Error executing env command: Message: "
+            LOG.error(e.getMessage());
+            LOG.warn("Error executing env command: Message: "
                     + e.getMessage());
         } finally {
             try {

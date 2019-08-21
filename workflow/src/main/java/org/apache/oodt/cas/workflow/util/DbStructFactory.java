@@ -24,11 +24,12 @@ import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -42,7 +43,7 @@ import java.util.logging.Logger;
 public final class DbStructFactory {
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(DbStructFactory.class
+    private static Logger LOG = LoggerFactory.getLogger(DbStructFactory.class
             .getName());
 
     private DbStructFactory() throws InstantiationException {

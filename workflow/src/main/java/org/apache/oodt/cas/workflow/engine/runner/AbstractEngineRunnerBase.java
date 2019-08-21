@@ -24,9 +24,8 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 
@@ -45,8 +44,8 @@ public abstract class AbstractEngineRunnerBase extends EngineRunner {
 
   protected WorkflowInstanceRepository instRep;
 
-  private static final Logger LOG = Logger
-      .getLogger(AbstractEngineRunnerBase.class.getName());
+  private static final Logger LOG = LoggerFactory
+      .getLogger(AbstractEngineRunnerBase.class);
 
   /**
    * Creates a new AbsractEngineRunnerBase with the provided
@@ -89,9 +88,9 @@ public abstract class AbstractEngineRunnerBase extends EngineRunner {
         instRep.updateWorkflowInstance(instance);
       }
     } catch (InstanceRepositoryException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Unabled to persist workflow instance: ["
-          + instance.getId() + "]: Message: " + e.getMessage());
+      LOG.error(e.getMessage(), e);
+      LOG.warn("Unabled to persist workflow instance: ["
+          + instance.getId() + "]: Message: " + e.getMessage(), e);
     }    
   }
 

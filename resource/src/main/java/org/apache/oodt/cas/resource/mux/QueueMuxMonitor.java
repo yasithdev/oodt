@@ -21,6 +21,8 @@ import org.apache.oodt.cas.resource.scheduler.QueueManager;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.Iterator;
@@ -28,8 +30,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author starchmd
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * A monitor to monitor the multiple monitors.
  */
 public class QueueMuxMonitor implements Monitor {
-    private static final Logger LOG = Logger.getLogger(QueueMuxMonitor.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(QueueMuxMonitor.class.getName());
     private BackendManager backend;
     private QueueManager qManager;
     /**
@@ -71,7 +71,7 @@ public class QueueMuxMonitor implements Monitor {
             try {
                 max = Math.max(max,backend.getMonitor(queue).getLoad(node));
             } catch (QueueManagerException e) {
-                LOG.log(Level.WARNING,"Queue '"+queue+"' has dissappeared.");
+                LOG.warn("Queue '"+queue+"' has dissappeared.");
             }
         }
         return max;
@@ -125,7 +125,7 @@ public class QueueMuxMonitor implements Monitor {
             try {
                 ret &= backend.getMonitor(queue).reduceLoad(node, loadValue);
             } catch (QueueManagerException e) {
-                LOG.log(Level.SEVERE,"Queue '"+queue+"' has dissappeared.");
+                LOG.error("Queue '"+queue+"' has dissappeared.");
                 throw new MonitorException(e);
             }
         }
@@ -144,7 +144,7 @@ public class QueueMuxMonitor implements Monitor {
             try {
                 ret &= backend.getMonitor(queue).assignLoad(node, loadValue);
             } catch (QueueManagerException e) {
-                LOG.log(Level.SEVERE,"Queue '"+queue+"' has dissappeared.");
+                LOG.error("Queue '"+queue+"' has dissappeared.");
                 throw new MonitorException(e);
             }
         }
@@ -161,7 +161,7 @@ public class QueueMuxMonitor implements Monitor {
             try {
                 backend.getMonitor(queue).addNode(node);
             } catch (QueueManagerException e) {
-                LOG.log(Level.SEVERE,"Queue '"+queue+"' has dissappeared.");
+                LOG.error("Queue '"+queue+"' has dissappeared.");
                 throw new MonitorException(e);
             }
         }
@@ -194,7 +194,7 @@ public class QueueMuxMonitor implements Monitor {
                     ret.add(queue);
                 }
             } catch(QueueManagerException e) {
-                LOG.log(Level.SEVERE, "Queue '"+queue+"' has dissappeared.");
+                LOG.error("Queue '"+queue+"' has dissappeared.");
             }
         }
         return ret;

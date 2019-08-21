@@ -29,6 +29,8 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -50,8 +52,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -73,7 +73,7 @@ public class RDFDatasetServlet extends HttpServlet {
   private FileManagerClient fClient = null;
 
   /* our log stream */
-  private Logger LOG = Logger.getLogger(RDFProductServlet.class.getName());
+  private Logger LOG = LoggerFactory.getLogger(RDFProductServlet.class.getName());
 
   /* our RDF configuration */
   private RDFConfig rdfConf;
@@ -95,7 +95,7 @@ public class RDFDatasetServlet extends HttpServlet {
     try {
       this.rdfConf = RDFUtils.initRDF(config);
     } catch (FileNotFoundException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       throw new ServletException(e.getMessage());
     }
 
@@ -112,11 +112,11 @@ public class RDFDatasetServlet extends HttpServlet {
     try {
       fClient = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
     } catch (MalformedURLException e) {
-      LOG.log(Level.SEVERE,
+      LOG.error(
           "Unable to initialize file manager url in RDF Servlet: [url="
               + fileManagerUrl + "], Message: " + e.getMessage());
     } catch (ConnectionException e) {
-      LOG.log(Level.SEVERE,
+      LOG.error(
           "Unable to initialize file manager url in RDF Servlet: [url="
               + fileManagerUrl + "], Message: " + e.getMessage());
     }
@@ -152,7 +152,7 @@ public class RDFDatasetServlet extends HttpServlet {
         type = fClient.getProductTypeById(productTypeId);
         productTypes.add(type);
       } catch (RepositoryManagerException e) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to obtain product type from product type id: ["
                 + productTypeId + "]: Message: " + e.getMessage());
         return;
@@ -255,8 +255,8 @@ public class RDFDatasetServlet extends HttpServlet {
     try {
       types = fClient.getProductTypes();
     } catch (RepositoryManagerException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Error retrieving product types: Message: "
+      LOG.error(e.getMessage());
+      LOG.warn("Error retrieving product types: Message: "
           + e.getMessage());
     }
 

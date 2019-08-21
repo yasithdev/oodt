@@ -22,6 +22,8 @@ package org.apache.oodt.cas.filemgr.ingest;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,8 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -53,7 +53,7 @@ public class CachedIngester extends StdIngester {
 
     private Cache cache;
 
-    private static final Logger LOG = Logger.getLogger(CachedIngester.class
+    private static final Logger LOG = LoggerFactory.getLogger(CachedIngester.class
             .getName());
 
     /**
@@ -134,7 +134,7 @@ public class CachedIngester extends StdIngester {
             try {
                 cache.sync();
             } catch (CacheException e) {
-                LOG.log(Level.WARNING,
+                LOG.warn(
                         "Exception re-syncing cache to file manager: [" + fmUrl
                                 + "]: Message: " + e.getMessage());
                 throw new CatalogException(
@@ -144,7 +144,7 @@ public class CachedIngester extends StdIngester {
             return cache.contains(productName);
         }
       } catch (URISyntaxException e) {
-        LOG.log(Level.SEVERE, "Exception getting URI from URL");
+        LOG.error("Exception getting URI from URL");
         throw new CatalogException("Exception getting URL from URL: Message: " + e.getMessage(), e);
       }
     }

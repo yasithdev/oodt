@@ -48,10 +48,8 @@ public class PackagedWorkflowManager {
 
   /**
    * Constructor
-   * 
-   * @param workflowDir
-   *          directory where packaged workflows exist
-   * @throws InstantiationException
+   *
+   * {@throws InstantiationException}
    */
   public PackagedWorkflowManager()
       throws InstantiationException {
@@ -60,10 +58,8 @@ public class PackagedWorkflowManager {
 
   /**
    * Add a workflow to the repository
-   * 
-   * @param workflow
-   *          a {@Link Workflow} to add into the repository
-   * @throws RepositoryException
+   * @param workflow a {@link Workflow} to add into the repository
+   * {@throws RepositoryException}
    */
   public void addWorkflow(Workflow workflow, String workflowDir) throws RepositoryException {
     this.loadTasksToRepo(workflow);
@@ -75,9 +71,9 @@ public class PackagedWorkflowManager {
   /**
    * Serialize a workflow
    * 
-   * @param workflow
-   * @return XML representation of the workflow
-   * @throws RepositoryException
+   * {@param workflow}
+   * {@return XML representation of the workflow}
+   * {@throws RepositoryException}
    */
   public String serializeWorkflow(Workflow workflow) throws RepositoryException {
     try {

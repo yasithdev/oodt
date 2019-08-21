@@ -20,13 +20,14 @@ package org.apache.oodt.cas.filemgr.tools;
 //JDK imports
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //Lucene imports
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.*;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.oodt.cas.filemgr.catalog.LuceneCatalog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -51,7 +52,7 @@ public class OptimizeLuceneCatalog {
     private int mergeFactor = 20;
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(OptimizeLuceneCatalog.class
+    private static final Logger LOG = LoggerFactory.getLogger(OptimizeLuceneCatalog.class
             .getName());
 
     /**
@@ -83,10 +84,10 @@ public class OptimizeLuceneCatalog {
             //writer.optimize();
             long timeAfter = System.currentTimeMillis();
             double numSeconds = ((timeAfter - timeBefore) * 1.0) / DOUBLE;
-            LOG.log(Level.INFO, "LuceneCatalog: [" + this.catalogPath
+            LOG.info("LuceneCatalog: [" + this.catalogPath
                     + "] optimized: took: [" + numSeconds + "] seconds");
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Unable to optimize lucene index: ["
+            LOG.warn("Unable to optimize lucene index: ["
                     + catalogPath + "]: Message: " + e.getMessage());
         } finally {
             try {

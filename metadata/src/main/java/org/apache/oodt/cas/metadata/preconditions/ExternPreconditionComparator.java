@@ -21,11 +21,11 @@ package org.apache.oodt.cas.metadata.preconditions;
 //JDK imports
 import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
 import org.apache.oodt.commons.exec.ExecUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.apache.oodt.cas.metadata.util.PathUtils.doDynamicReplacement;
 
@@ -48,7 +48,7 @@ public class ExternPreconditionComparator extends PreConditionComparator<Long> {
 
    private String executeCommand; 
    
-   protected static final Logger LOG = Logger
+   protected static final Logger LOG = LoggerFactory
       .getLogger( ExternPreconditionComparator.class.getName()); 
    
     
@@ -71,7 +71,7 @@ public class ExternPreconditionComparator extends PreConditionComparator<Long> {
                 " " + product.getName();
 
         } catch (Exception e ) {
-            LOG.log(Level.WARNING,
+            LOG.warn(
                 "Exception running extern comparator calling doDynamicReplacement with : command ["
                 + executeCommand
                 + "]: Message: " + e.getMessage());
@@ -87,7 +87,7 @@ public class ExternPreconditionComparator extends PreConditionComparator<Long> {
             status = ExecUtils.callProgram(envReplacedExecuteCommand, workingDir);
          
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
+            LOG.warn(
                 "IOException running extern comparator: commandLine: ["
                     + envReplacedExecuteCommand
                     + "]: Message: " + e.getMessage());

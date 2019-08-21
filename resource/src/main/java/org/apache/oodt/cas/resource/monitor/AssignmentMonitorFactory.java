@@ -21,10 +21,8 @@ package org.apache.oodt.cas.resource.monitor;
 //OODT imports
 import org.apache.oodt.cas.resource.noderepo.XmlNodeRepositoryFactory;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
-
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author woollard
@@ -38,7 +36,7 @@ import java.util.logging.Logger;
  */
 public class AssignmentMonitorFactory implements MonitorFactory {
 
-    private static final Logger LOG = Logger
+    private static final Logger LOG = LoggerFactory
             .getLogger(AssignmentMonitorFactory.class.getName());
 
     /*
@@ -56,7 +54,7 @@ public class AssignmentMonitorFactory implements MonitorFactory {
                     .getNodeRepositoryFromFactory(nodeRepoFactoryStr)
                     .loadNodes());
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed to create Assignment Monitor : "
+            LOG.error("Failed to create Assignment Monitor : "
                     + e.getMessage(), e);
             return null;
         }

@@ -33,6 +33,8 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.util.DateConvert;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -56,8 +58,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //JDK imports
 
@@ -82,7 +82,7 @@ public class RSSProductServlet extends HttpServlet {
   private RSSConfig conf;
 
   /* our log stream */
-  private Logger LOG = Logger.getLogger(RSSProductServlet.class.getName());
+  private Logger LOG = LoggerFactory.getLogger(RSSProductServlet.class.getName());
 
   public static final String COPYRIGHT_BOILER_PLATE = "Copyright 2010: Apache Software Foundation";
 
@@ -162,7 +162,7 @@ public class RSSProductServlet extends HttpServlet {
         try {
           type = fm.getProductTypeById(productTypeId);
         } catch (RepositoryManagerException e) {
-          LOG.log(Level.SEVERE,
+          LOG.error(
               "Unable to obtain product type from product type id: ["
                   + productTypeId + "]: Message: " + e.getMessage());
           return;
@@ -172,11 +172,11 @@ public class RSSProductServlet extends HttpServlet {
       }
 
     } catch (CatalogException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       LOG
-          .log(Level.WARNING,
+          .warn(
               "Exception getting products from Catalog: Message: "
-                  + e.getMessage());
+                  + e.getMessage(), e);
       return;
     }
 
@@ -229,8 +229,8 @@ public class RSSProductServlet extends HttpServlet {
           try {
             productType = fm.getProductTypeById(productTypeIdStr);
           } catch (RepositoryManagerException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.SEVERE,
+            LOG.error(e.getMessage());
+            LOG.error(
                 "Unable to obtain product type from product type id: ["
                 + ((Product) products.get(0)).getProductType()
                                              .getProductTypeId() + "]: Message: " + e.getMessage());
@@ -250,7 +250,7 @@ public class RSSProductServlet extends HttpServlet {
 
           Metadata m = this.safeGetMetadata(p);
           if (m == null){
-            LOG.warning("Cannot identify metadata for product: "+p.getProductId()+": setting default met object and received time.");
+            LOG.warn("Cannot identify metadata for product: "+p.getProductId()+": setting default met object and received time.");
             m = new Metadata();
             m.addMetadata("CAS.ProductReceivedTime", DateConvert.isoFormat(new Date()));
           }
@@ -303,7 +303,7 @@ public class RSSProductServlet extends HttpServlet {
     try {
       return fm.getMetadata(p);
     } catch (CatalogException ignore) {
-      LOG.log(Level.SEVERE, ignore.getMessage());
+      LOG.error(ignore.getMessage());
       return null;
     }
   }
@@ -312,7 +312,7 @@ public class RSSProductServlet extends HttpServlet {
     try {
       return fm.getProductReferences(p);
     } catch (CatalogException ignore) {
-      LOG.log(Level.SEVERE, ignore.getMessage());
+      LOG.error(ignore.getMessage());
       return null;
     }
   }
@@ -321,11 +321,11 @@ public class RSSProductServlet extends HttpServlet {
     try {
       fm = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
     } catch (MalformedURLException e) {
-      LOG.log(Level.SEVERE,
+      LOG.error(
           "Unable to initialize file manager url in RSS Servlet: [url="
               + fileManagerUrl + "], Message: " + e.getMessage());
     } catch (ConnectionException e) {
-      LOG.log(Level.SEVERE,
+      LOG.error(
           "Unable to initialize file manager url in RSS Servlet: [url="
               + fileManagerUrl + "], Message: " + e.getMessage());
     }

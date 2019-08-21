@@ -18,19 +18,18 @@
 
 package org.apache.oodt.cas.resource.scheduler;
 
-//JDKimports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 //OODT imports
 import org.apache.oodt.cas.resource.jobqueue.JobQueue;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
+import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -47,7 +46,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
 public class LRUScheduler implements Scheduler {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(LRUScheduler.class
+    private static final Logger LOG = LoggerFactory.getLogger(LRUScheduler.class
             .getName());
     public static final double DOUBLE = 1000.0;
 
@@ -95,11 +94,11 @@ public class LRUScheduler implements Scheduler {
 
                 try {
                     exec = myJobQueue.getNextJob();
-                    LOG.log(Level.INFO, "Obtained Job: ["
+                    LOG.info("Obtained Job: ["
                             + exec.getJob().getId()
                             + "] from Queue: Scheduling for execution");
                 } catch (Exception e) {
-                    LOG.log(Level.WARNING,
+                    LOG.warn(
                             "Error getting next job from JobQueue: Message: "
                                     + e.getMessage());
                     continue;
@@ -108,7 +107,7 @@ public class LRUScheduler implements Scheduler {
                 try {
                     schedule(exec);
                 } catch (Exception e) {
-                    LOG.log(Level.WARNING, "Error scheduling job: ["
+                    LOG.warn("Error scheduling job: ["
                             + exec.getJob().getId() + "]: Message: "
                             + e.getMessage());
                     // place the job spec back on the queue
@@ -140,19 +139,19 @@ public class LRUScheduler implements Scheduler {
                 queueManager.usedNode(queueName, node.getNodeId());
                 
                 // assign via batch system
-                LOG.log(Level.INFO, "Assigning job: ["
+                LOG.info("Assigning job: ["
                         + spec.getJob().getName() + "] to node: ["
                         + node.getNodeId() + "]");
                 try {
                     myBatchmgr.executeRemotely(spec, node);
                 } catch (JobExecutionException e) {
-                    LOG.log(Level.WARNING, "Exception executing job: ["
+                    LOG.warn("Exception executing job: ["
                             + spec.getJob().getId() + "] to node: ["
                             + node.getIpAddr() + "]: Message: "
                             + e.getMessage());
                     try {
                         // queue the job back up
-                        LOG.log(Level.INFO, "Requeueing job: ["
+                        LOG.info("Requeueing job: ["
                                 + spec.getJob().getId() + "]");
                         myJobQueue.requeueJob(spec);
 
@@ -162,7 +161,7 @@ public class LRUScheduler implements Scheduler {
                     }
                 }
             } catch (MonitorException e) {
-                LOG.log(Level.WARNING, "Exception assigning load to resource "
+                LOG.warn("Exception assigning load to resource "
                         + "node: [" + node.getNodeId() + "]: load: [" + load
                         + "]: Message: " + e.getMessage());
                 throw new SchedulerException(e.getMessage());
@@ -232,8 +231,7 @@ public class LRUScheduler implements Scheduler {
 	                resNode = myMonitor.getNodeById(nodeId);
 	                nodeLoad = myMonitor.getLoad(resNode);
 	            } catch (MonitorException e) {
-	                LOG
-	                        .log(Level.WARNING, "Exception getting load on "
+	                LOG.warn("Exception getting load on "
 	                                + "node: [" + (resNode != null ? resNode.getNodeId() : null)
 	                                + "]: Message: " + e.getMessage());
 	                throw new SchedulerException(e.getMessage());

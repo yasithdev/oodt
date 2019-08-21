@@ -28,11 +28,11 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.cas.workflow.structs.PrioritySorter;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -62,7 +62,7 @@ public class TaskQuerier implements Runnable {
   
   private long waitSeconds;
 
-  private static final Logger LOG = Logger.getLogger(TaskQuerier.class
+  private static final Logger LOG = LoggerFactory.getLogger(TaskQuerier.class
       .getName());
 
   /**
@@ -104,7 +104,7 @@ public class TaskQuerier implements Runnable {
    * {@link #prioritizer}.
    */
   public void run() {
-    LOG.log(Level.FINE, "TaskQuerier configured with wait seconds: ["+this.waitSeconds+"]");
+    LOG.info("TaskQuerier configured with wait seconds: ["+this.waitSeconds+"]");
     while (running) {
       List<WorkflowProcessor> processors = processorQueue.getProcessors();
       List<WorkflowProcessor> processorsToRun = new Vector<WorkflowProcessor>();
@@ -116,7 +116,7 @@ public class TaskQuerier implements Runnable {
         WorkflowLifecycle lifecycle = helper
             .getLifecycleForProcessor(processor);
 
-        LOG.log(Level.FINE, "TaskQuerier: dispositioning processor with id: ["
+        LOG.info("TaskQuerier: dispositioning processor with id: ["
             + processor.getWorkflowInstance().getId() + "]: state: "
             + processor.getWorkflowInstance().getState());
 
@@ -128,7 +128,7 @@ public class TaskQuerier implements Runnable {
                 "waiting", "Added to Runnable queue");
             tp.getWorkflowInstance().setState(state);
             persist(tp.getWorkflowInstance());
-            LOG.log(Level.INFO, "Added processor with priority: ["
+            LOG.info("Added processor with priority: ["
                 + tp.getWorkflowInstance().getPriority() + "]");
             processorsToRun.add(tp);
           }
@@ -145,7 +145,7 @@ public class TaskQuerier implements Runnable {
 
         } else {
           // simply call nextState and persist it
-          LOG.log(Level.FINE, "Processor for workflow instance: ["
+          LOG.info("Processor for workflow instance: ["
               + processor.getWorkflowInstance().getId()
               + "] not ready to Execute or already Executing: "
               + "advancing it to next state.");
@@ -211,8 +211,8 @@ public class TaskQuerier implements Runnable {
           repo.updateWorkflowInstance(instance);
         }
       } catch (InstanceRepositoryException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
-        LOG.log(Level.WARNING, "Unable to update workflow instance: ["
+        LOG.error(e.getMessage());
+        LOG.warn("Unable to update workflow instance: ["
             + instance.getId() + "] status to [" + instance.getState().getName()
             + "]. Message: " + e.getMessage());
       }

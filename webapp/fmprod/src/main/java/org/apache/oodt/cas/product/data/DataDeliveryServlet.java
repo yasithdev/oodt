@@ -27,6 +27,8 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.io.File;
@@ -40,8 +42,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,7 +62,7 @@ public class DataDeliveryServlet extends HttpServlet implements
   private FileManagerClient client;
 
   /** our log stream */
-  private static final Logger LOG = Logger.getLogger(DataDeliveryServlet.class
+  private static final Logger LOG = LoggerFactory.getLogger(DataDeliveryServlet.class
           .getName());
 
   /** our working dir path. */
@@ -208,8 +208,8 @@ public class DataDeliveryServlet extends HttpServlet implements
         o2.write(buf, 0, n);
       }
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Exception delivering data!: Message: "
+      LOG.error(e.getMessage());
+      LOG.warn("Exception delivering data!: Message: "
           + e.getMessage());
     } finally {
       if (in != null) {
@@ -243,7 +243,7 @@ public class DataDeliveryServlet extends HttpServlet implements
       refs = client.getProductReferences(product);      
     }
     catch(Exception e){
-      LOG.warning("Unable to deliver product: ID: ["+productID+"]: "
+      LOG.warn("Unable to deliver product: ID: ["+productID+"]: "
           + "Message: "+e.getMessage()+" throwing 404.");
       res.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
@@ -260,7 +260,7 @@ public class DataDeliveryServlet extends HttpServlet implements
       res.addHeader(CONTENT_DISPOSITION_HDR, "attachment; filename=\""
           + new File(new URI(ref.getDataStoreReference())).getName() + "\"");
     } catch (URISyntaxException e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "Unable to sense filename from data store URI: Message: "
               + e.getMessage());
     }

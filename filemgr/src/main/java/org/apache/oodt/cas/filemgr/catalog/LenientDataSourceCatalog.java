@@ -31,6 +31,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -40,8 +42,6 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -57,7 +57,7 @@ import javax.sql.DataSource;
 public class LenientDataSourceCatalog extends DataSourceCatalog {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(LenientDataSourceCatalog.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(LenientDataSourceCatalog.class.getName());
     
     // ISO date/time format for CAS.ProductReceivedTime 
 		private SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
@@ -101,7 +101,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             List<String> values = m.getAllMetadata(metadataName);
 
             if (values == null) {
-                LOG.log(Level.WARNING, "No Metadata specified for product ["
+                LOG.warn("No Metadata specified for product ["
                         + product.getProductName() + "] for required field ["
                         + metadataName
                         + "]: Attempting to continue processing metadata");
@@ -112,10 +112,9 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             try {
               addMetadataValue(metadataId, product, value);
             } catch (Exception e) {
-              LOG.log(Level.SEVERE, e.getMessage());
+                LOG.error(e.getMessage(), e);
               LOG
-                  .log(
-                      Level.WARNING,
+                  .warn(
                       "Exception ingesting metadata. Error inserting field: ["
                       + metadataId
                       + "=>"
@@ -124,7 +123,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                       + product.getProductName()
                       + "]: Message: "
                       + e.getMessage()
-                      + ": Attempting to continue processing metadata");
+                      + ": Attempting to continue processing metadata", e);
             }
           }
         }
@@ -145,7 +144,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             }
             
         } catch (ValidationLayerException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
@@ -189,10 +188,9 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 try {
                   removeMetadataValue(metadataId.getKey(), product, value);
                 } catch (Exception e) {
-                  LOG.log(Level.SEVERE, e.getMessage());
+                    LOG.error(e.getMessage(), e);
                   LOG
-                      .log(
-                          Level.WARNING,
+                      .warn(
                           "Exception removing metadata. Error deleting field: ["
                           + metadataId
                           + "=>"
@@ -201,7 +199,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                           + product.getProductName()
                           + "]: Message: "
                           + e.getMessage()
-                          + ": Attempting to continue processing metadata");
+                          + ": Attempting to continue processing metadata", e);
                 }
               }
             }
@@ -225,15 +223,15 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
               metadataSql += " ORDER BY pkey";
             }
 
-            LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
+            LOG.info("getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
             
             // parse SQL results
             m = populateProductMetadata(rs, product);
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting metadata. Message: "
+            LOG.error(e.getMessage(), e);
+            LOG.warn("Exception getting metadata. Message: "
                     + e.getMessage());
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -280,7 +278,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
       	try {
             elements = getValidationLayer().getElements(product.getProductType());
         } catch (ValidationLayerException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
@@ -360,7 +358,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
               metadataSql += " ORDER BY pkey";
             }
 
-            LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
+            LOG.info("getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
 
             // parse SQL results
@@ -368,8 +366,8 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
 
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting metadata. Message: "
+            LOG.error(e.getMessage(), e);
+            LOG.warn("Exception getting metadata. Message: "
                     + e.getMessage());
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -435,7 +433,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                                     + " (product_id, element_id, metadata_value) ")
                     + valueClauseSql.toString();
             LOG
-                    .log(Level.FINE, "addMetadataValue: Executing: "
+                    .info("addMetadataValue: Executing: "
                             + metaIngestSql);
             statement.execute(metaIngestSql);
             
@@ -444,23 +442,23 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             		// convert from "2012-12-18T09:00:14.068-08:00" --> "2012-12-18T09:00:14.068-0800" --> "2012-12-18T10:00:14"
             		String datetime = dbFormat.format( isoFormat.parse( value.replaceAll(":00$", "00") ));
             		String updateDateTimeSql = "UPDATE products SET product_datetime='"+datetime+"' WHERE product_id="+quoteIt(product.getProductId());
-            		LOG.log(Level.FINE, "addMetadataValue: Executing: "+updateDateTimeSql);
+            		LOG.info("addMetadataValue: Executing: "+updateDateTimeSql);
             		statement.execute(updateDateTimeSql);
             }
             
             conn.commit();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception adding metadata value. Message: "
-                    + e.getMessage());
+            LOG.error(e.getMessage(), e);
+            LOG.warn("Exception adding metadata value. Message: "
+                    + e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
+                LOG.error(
                         "Unable to rollback add metadata value. Message: "
-                                + e2.getMessage());
+                                + e2.getMessage(), e);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -512,23 +510,23 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 metRemoveSql += "METADATA_VALUE = " + value;
             }
 
-            LOG.log(Level.FINE, "removeMetadataValue: Executing: "
+            LOG.info("removeMetadataValue: Executing: "
                     + metRemoveSql);
             statement.execute(metRemoveSql);
             conn.commit();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
+            LOG.error(e.getMessage(), e);
+            LOG.warn(
                     "Exception removing metadata value. Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
+                LOG.error(
                         "Unable to rollback remove metadata value. Message: "
-                                + e2.getMessage());
+                                + e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -703,7 +701,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             }
 
 
-            LOG.log(Level.FINE, "catalog get num results: executing: "
+            LOG.info("catalog get num results: executing: "
                     + getProductSql);
 
             rs = statement.executeQuery(getProductSql);
@@ -713,18 +711,18 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
+            LOG.error(e.getMessage(), e);
+            LOG.warn(
                     "Exception performing get num results. Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
+                LOG.error(
                         "Unable to rollback get num results transaction. Message: "
-                                + e2.getMessage());
+                                + e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {

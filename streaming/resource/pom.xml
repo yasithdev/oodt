@@ -20,7 +20,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-streaming</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>cas-streaming-resource</artifactId>
@@ -55,6 +55,7 @@ the License.
       <plugin>
           <groupId>net.alchim31.maven</groupId>
           <artifactId>scala-maven-plugin</artifactId>
+          <version>3.2.0</version>
           <executions>
               <execution>
                   <id>compile</id>
@@ -159,5 +160,9 @@ the License.
       <version>0.21.0</version>
       <classifier>shaded-protobuf</classifier>
    </dependency>
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+      </dependency>
   </dependencies>
 </project>

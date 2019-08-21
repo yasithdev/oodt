@@ -26,14 +26,14 @@ import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
 import org.apache.oodt.cas.workflow.structs.*;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  */
 public class WorkflowProcessorQueue {
 
-  private static final Logger LOG = Logger
+  private static final Logger LOG = LoggerFactory
       .getLogger(WorkflowProcessorQueue.class.getName());
 
   private WorkflowInstanceRepository repo;
@@ -75,9 +75,9 @@ public class WorkflowProcessorQueue {
     try {
       page = repo.getPagedWorkflows(1);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Unable to load workflow processors: Message: "
-          + e.getMessage());
+      LOG.error(e.getMessage(), e);
+      LOG.warn("Unable to load workflow processors: Message: "
+          + e.getMessage(), e);
       return null;
     }
 
@@ -90,10 +90,10 @@ public class WorkflowProcessorQueue {
         try {
           processor = fromWorkflowInstance(inst);
         } catch (Exception e) {
-          LOG.log(Level.SEVERE, e.getMessage());
-          LOG.log(Level.WARNING,
+          LOG.error(e.getMessage(), e);
+          LOG.warn(
               "Unable to convert workflow instance: [" + inst.getId()
-                  + "] into WorkflowProcessor: Message: " + e.getMessage());
+                  + "] into WorkflowProcessor: Message: " + e.getMessage(), e);
           continue;
         }
         if (processor != null) {
@@ -117,11 +117,11 @@ public class WorkflowProcessorQueue {
         repo.updateWorkflowInstance(inst);
       }
     } catch (InstanceRepositoryException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage(), e);
+      LOG.warn(
           "Unable to update workflow instance: [" + inst.getId()
               + "] with status: [" + inst.getState().getName() + "]: Message: "
-              + e.getMessage());
+              + e.getMessage(), e);
     }
   }  
 
@@ -131,7 +131,7 @@ public class WorkflowProcessorQueue {
       return processorCache.get(inst.getId());
     } else {
       if (inst.getParentChildWorkflow().getGraph() == null) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to process Graph for workflow instance: [" + inst.getId()
                 + "]");
         return null;
@@ -362,7 +362,7 @@ public class WorkflowProcessorQueue {
         modelRepo.addTask(task);
       }
       catch(RepositoryException e){
-        LOG.log(Level.SEVERE, e.getMessage());
+        LOG.error(e.getMessage(), e);
       }
     }
   }
@@ -372,7 +372,7 @@ public class WorkflowProcessorQueue {
       try {
         modelRepo.addWorkflow(workflow);
       } catch (RepositoryException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
+        LOG.error(e.getMessage(), e);
       }
     }
   }
@@ -445,7 +445,7 @@ public class WorkflowProcessorQueue {
         }
       }
       catch(RepositoryException e){
-        LOG.log(Level.SEVERE, e.getMessage());
+        LOG.error(e.getMessage(), e);
       }
     
     return null;

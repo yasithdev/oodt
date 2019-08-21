@@ -120,7 +120,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             if (proxy != null) {
                 success = proxy.isAlive();
             } else return false;
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             logger.error("Error when connecting to filemgr: {}", fileManagerUrl);
             success = false;
         }
@@ -134,7 +134,7 @@ public class AvroFileManagerClient implements FileManagerClient {
 
         try {
             success = proxy.transferringProduct(AvroTypeFactory.getAvroProduct(product));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new DataTransferException(e.getMessage());
         }
 
@@ -146,7 +146,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         boolean success;
         try {
             success = proxy.removeProductTransferStatus(AvroTypeFactory.getAvroProduct(product));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new DataTransferException(e.getMessage());
         }
         return success;
@@ -157,7 +157,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         boolean success;
         try {
             success = this.proxy.isTransferComplete(AvroTypeFactory.getAvroProduct(product));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new DataTransferException(e.getMessage());
         }
         return success;
@@ -168,7 +168,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         boolean success;
         try {
             success = this.proxy.moveProduct(AvroTypeFactory.getAvroProduct(product), newPath);
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new DataTransferException(e.getMessage());
         }
         return success;
@@ -179,7 +179,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         boolean success;
         try {
             success = this.proxy.modifyProduct(AvroTypeFactory.getAvroProduct(product));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
         return success;
@@ -190,7 +190,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         boolean success;
         try {
             success = this.proxy.removeProduct(AvroTypeFactory.getAvroProduct(product));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
         return success;
@@ -200,7 +200,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public FileTransferStatus getCurrentFileTransfer() throws DataTransferException {
         try {
             return AvroTypeFactory.getFileTransferStatus(this.proxy.getCurrentFileTransfer());
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new DataTransferException(e.getMessage());
         }
     }
@@ -212,7 +212,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             for (AvroFileTransferStatus afts : this.proxy.getCurrentFileTransfers()) {
                 fileTransferStatuses.add(AvroTypeFactory.getFileTransferStatus(afts));
             }
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new DataTransferException(e.getMessage());
         }
         return fileTransferStatuses;
@@ -222,7 +222,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public double getProductPctTransferred(Product product) throws DataTransferException {
         try {
             return this.proxy.getProductPctTransferred(AvroTypeFactory.getAvroProduct(product));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new DataTransferException(e.getMessage());
         }
     }
@@ -231,7 +231,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public double getRefPctTransferred(Reference reference) throws DataTransferException {
         try {
             return this.proxy.getRefPctTransferred(AvroTypeFactory.getAvroReference(reference));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new DataTransferException(e.getMessage());
         }
     }
@@ -245,7 +245,7 @@ public class AvroFileManagerClient implements FileManagerClient {
                     AvroTypeFactory.getAvroProductType(type),
                     pageNum
             ));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -266,7 +266,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         logger.debug("Getting last page for product type: {}", type.toString());
         try {
             return AvroTypeFactory.getProductPage(this.proxy.getLastPage(AvroTypeFactory.getAvroProductType(type)));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -279,7 +279,7 @@ public class AvroFileManagerClient implements FileManagerClient {
                     AvroTypeFactory.getAvroProductType(type),
                     AvroTypeFactory.getAvroProductPage(currPage)
             ));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -292,7 +292,7 @@ public class AvroFileManagerClient implements FileManagerClient {
                     AvroTypeFactory.getAvroProductType(type),
                     AvroTypeFactory.getAvroProductPage(currPage)
             ));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -302,7 +302,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         logger.debug("Adding product type: {}", type.toString());
         try {
             return this.proxy.addProductType(AvroTypeFactory.getAvroProductType(type));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new RepositoryManagerException(e.getMessage());
         }
     }
@@ -311,7 +311,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public boolean hasProduct(String productName) throws CatalogException {
         try {
             return this.proxy.hasProduct(productName);
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -320,7 +320,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public int getNumProducts(ProductType type) throws CatalogException {
         try {
             return this.proxy.getNumProducts(AvroTypeFactory.getAvroProductType(type));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -332,7 +332,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             for (AvroProduct p : this.proxy.getTopNProducts(n)) {
                 products.add(AvroTypeFactory.getProduct(p));
             }
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
         return products;
@@ -345,7 +345,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             for (AvroProduct p : this.proxy.getTopNProductsByProductType(n, AvroTypeFactory.getAvroProductType(type))) {
                 products.add(AvroTypeFactory.getProduct(p));
             }
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
         return products;
@@ -355,7 +355,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public void setProductTransferStatus(Product product) throws CatalogException {
         try {
             this.proxy.setProductTransferStatus(AvroTypeFactory.getAvroProduct(product));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -364,7 +364,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public void addProductReferences(Product product) throws CatalogException {
         try {
             this.proxy.addProductReferences(AvroTypeFactory.getAvroProduct(product));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -374,7 +374,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         try {
             this.proxy.addMetadata(AvroTypeFactory.getAvroProduct(product),
                     AvroTypeFactory.getAvroMetadata(metadata));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
 
@@ -387,7 +387,7 @@ public class AvroFileManagerClient implements FileManagerClient {
                     AvroTypeFactory.getAvroProduct(product),
                     AvroTypeFactory.getAvroMetadata(met)
             );
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -396,7 +396,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public String catalogProduct(Product product) throws CatalogException {
         try {
             return this.proxy.catalogProduct(AvroTypeFactory.getAvroProduct(product));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -405,7 +405,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public Metadata getMetadata(Product product) throws CatalogException {
         try {
             return AvroTypeFactory.getMetadata(this.proxy.getMetadata(AvroTypeFactory.getAvroProduct(product)));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -415,7 +415,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         try {
             return AvroTypeFactory.getMetadata(
                     this.proxy.getReducedMetadata(AvroTypeFactory.getAvroProduct(product), (List<String>) elements));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -424,7 +424,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public boolean removeFile(String filePath) throws DataTransferException {
         try {
             return this.proxy.removeFile(filePath);
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new DataTransferException(e.getMessage());
         }
     }
@@ -433,7 +433,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public byte[] retrieveFile(String filePath, int offset, int numBytes) throws DataTransferException {
         try {
             return this.proxy.retrieveFile(filePath, offset, numBytes).array();
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new DataTransferException(e.getMessage());
         }
     }
@@ -442,7 +442,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public void transferFile(String filePath, byte[] fileData, int offset, int numBytes) throws DataTransferException {
         try {
             this.proxy.transferFile(filePath, ByteBuffer.wrap(fileData), offset, numBytes);
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new DataTransferException(e.getMessage());
         }
     }
@@ -456,7 +456,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             }
             return products;
 
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -468,7 +468,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             for (AvroElement ap : this.proxy.getElementsByProductType(AvroTypeFactory.getAvroProductType(type))) {
                 products.add(AvroTypeFactory.getElement(ap));
             }
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new ValidationLayerException(e.getMessage());
         }
         return products;
@@ -478,7 +478,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public Element getElementById(String elementId) throws ValidationLayerException {
         try {
             return AvroTypeFactory.getElement(this.proxy.getElementById(elementId));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new ValidationLayerException(e.getMessage());
         }
     }
@@ -487,7 +487,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public Element getElementByName(String elementName) throws ValidationLayerException {
         try {
             return AvroTypeFactory.getElement(this.proxy.getElementByName(elementName));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new ValidationLayerException(e.getMessage());
         }
     }
@@ -500,7 +500,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             for (AvroQueryResult aqr : avroQueryResults) {
                 queryResults.add(AvroTypeFactory.getQueryResult(aqr));
             }
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
         return queryResults;
@@ -513,7 +513,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             for (AvroProduct ap : this.proxy.query(AvroTypeFactory.getAvroQuery(query), AvroTypeFactory.getAvroProductType(type))) {
                 products.add(AvroTypeFactory.getProduct(ap));
             }
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
         return products;
@@ -523,7 +523,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public ProductType getProductTypeByName(String productTypeName) throws RepositoryManagerException {
         try {
             return AvroTypeFactory.getProductType(this.proxy.getProductTypeByName(productTypeName));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new RepositoryManagerException(e.getMessage());
         }
     }
@@ -532,7 +532,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public ProductType getProductTypeById(String productTypeId) throws RepositoryManagerException {
         try {
             return AvroTypeFactory.getProductType(this.proxy.getProductTypeById(productTypeId));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new RepositoryManagerException(e.getMessage());
         }
     }
@@ -544,7 +544,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             for (AvroProductType apt : this.proxy.getProductTypes()) {
                 productTypes.add(AvroTypeFactory.getProductType(apt));
             }
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new RepositoryManagerException(e.getMessage());
         }
         return productTypes;
@@ -557,7 +557,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             for (AvroReference ar : this.proxy.getProductReferences(AvroTypeFactory.getAvroProduct(product))) {
                 references.add(AvroTypeFactory.getReference(ar));
             }
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
         return references;
@@ -567,7 +567,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public Product getProductById(String productId) throws CatalogException {
         try {
             return AvroTypeFactory.getProduct(this.proxy.getProductById(productId));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }
@@ -576,7 +576,7 @@ public class AvroFileManagerClient implements FileManagerClient {
     public Product getProductByName(String productName) throws CatalogException {
         try {
             return AvroTypeFactory.getProduct(this.proxy.getProductByName(productName));
-        } catch (AvroRemoteException e) {
+        } catch (Exception e) {
             throw new CatalogException(e.getMessage());
         }
     }

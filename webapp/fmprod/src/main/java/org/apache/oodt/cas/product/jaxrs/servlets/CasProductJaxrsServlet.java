@@ -24,8 +24,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -38,6 +36,8 @@ import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.product.jaxrs.configurations.RdfConfiguration;
 import org.apache.oodt.cas.product.jaxrs.configurations.RssConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides a single place to initialize items such as the file manager client,
@@ -50,7 +50,7 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
   // Auto-generated ID for serialization.
   private static final long serialVersionUID = -1835790185000773396L;
 
-  private static final Logger LOGGER = Logger.getLogger(CasProductJaxrsServlet
+  private static final Logger LOG = LoggerFactory.getLogger(CasProductJaxrsServlet
     .class.getName());
 
   private static final int CONFIG_PARAM_LENGTH = 3;
@@ -92,7 +92,7 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
       else
       {
         // Try the default URL for the file manager.
-        LOGGER.log(Level.WARNING, "Unable to find a servlet context parameter "
+        LOG.warn("Unable to find a servlet context parameter "
           + "for the file manager URL.");
         url = new URL("http://localhost:9000");
       }
@@ -105,14 +105,14 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
     catch (MalformedURLException e)
     {
       String message = "Encountered a malformed URL for the file manager.";
-      LOGGER.log(Level.SEVERE, message, e);
+      LOG.error(message, e);
       throw new ServletException(message);
     }
     catch (ConnectionException e)
     {
       String message =
         "Client could not establish a connection to the file manager.";
-      LOGGER.log(Level.SEVERE, message, e);
+      LOG.error(message, e);
       throw new ServletException(message);
     }
   }
@@ -138,12 +138,12 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
       if (workingDir.exists() && workingDir.isDirectory())
       {
         context.setAttribute("workingDir", workingDir);
-        LOGGER.log(Level.FINE, "The file manager's working directory has been "
+        LOG.info("The file manager's working directory has been "
           + "set up as " + workingDir.getAbsolutePath());
       }
       else
       {
-        LOGGER.log(Level.SEVERE, "Unable to locate the working directory for "
+        LOG.error("Unable to locate the working directory for "
           + "the file manager.");
       }
     }
@@ -151,7 +151,7 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
     {
       String message = "Unable to find a servlet context parameter for the file"
         + " manager working directory path.";
-      LOGGER.log(Level.SEVERE, message);
+      LOG.error(message);
       throw new ServletException(message);
     }
   }
@@ -203,14 +203,13 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
           }
           catch (IOException e)
           {
-            LOGGER.log(Level.WARNING, "The configuration '" + parameterName
+            LOG.warn("The configuration '" + parameterName
               + "'could not be initialized (value: " + value + ").", e);
           }
         }
         else
         {
-          LOGGER.log(Level.FINE,
-            "Configuration context parameter could not be parsed.");
+          LOG.info("Configuration context parameter could not be parsed.");
         }
       }
     }

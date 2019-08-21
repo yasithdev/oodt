@@ -18,8 +18,8 @@
 package org.apache.oodt.cas.filemgr.datatransfer;
 
 //JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -36,7 +36,7 @@ public class RemoteDataTransferFactory implements DataTransferFactory {
     private int chunkSize = 0;
 
     /* our log stream */
-    private static final Logger LOG = Logger
+    private static final Logger LOG = LoggerFactory
             .getLogger(RemoteDataTransferFactory.class.getName());
 
     /**
@@ -47,7 +47,7 @@ public class RemoteDataTransferFactory implements DataTransferFactory {
             "org.apache.oodt.cas.filemgr.datatransfer.remote.chunkSize",
             1024);
 
-        LOG.log(Level.INFO, "RemoteDataTransfer enabled: using chunk size: ["
+        LOG.info("RemoteDataTransfer enabled: using chunk size: ["
                 + chunkSize + "]");
     }
 

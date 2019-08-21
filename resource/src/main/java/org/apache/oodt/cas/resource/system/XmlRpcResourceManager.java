@@ -36,6 +36,8 @@ import org.apache.oodt.config.Component;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.ConfigurationManagerFactory;
 import org.apache.xmlrpc.WebServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -47,8 +49,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author woollard
@@ -63,7 +63,7 @@ import java.util.logging.Logger;
 public class XmlRpcResourceManager implements ResourceManager{
 
     /** our log stream */
-    private Logger LOG = Logger.getLogger(XmlRpcResourceManager.class.getName());
+    private Logger LOG = LoggerFactory.getLogger(XmlRpcResourceManager.class.getName());
 
     private int port;
     /** our xml rpc web server */
@@ -89,7 +89,7 @@ public class XmlRpcResourceManager implements ResourceManager{
         try {
             configurationManager.loadConfiguration();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Unable to load configuration", e);
+            LOG.error("Unable to load configuration", e);
             throw new IOException("Unable to load configuration", e);
         }
 
@@ -108,7 +108,7 @@ public class XmlRpcResourceManager implements ResourceManager{
         webServer.addHandler("resourcemgr", this);
         webServer.start();
 
-        LOG.log(Level.INFO, "Resource Manager started by "
+        LOG.info("Resource Manager started by "
                 + System.getProperty("user.name", "unknown"));
     }
 
@@ -155,7 +155,7 @@ public class XmlRpcResourceManager implements ResourceManager{
             spec = scheduler.getJobQueue().getJobRepository()
                     .getJobById(jobId);
         } catch (JobRepositoryException e) {
-            LOG.log(Level.WARNING,
+            LOG.warn(
                     "Exception communicating with job repository for job: ["
                             + jobId + "]: Message: " + e.getMessage());
             throw new JobRepositoryException("Unable to get job: [" + jobId
@@ -260,7 +260,7 @@ public class XmlRpcResourceManager implements ResourceManager{
     public boolean killJob(String jobId) throws MonitorException {
         String resNodeId = scheduler.getBatchmgr().getExecutionNode(jobId);
         if (resNodeId == null) {
-            LOG.log(Level.WARNING, "Attempt to kill job: [" + jobId
+            LOG.warn("Attempt to kill job: [" + jobId
                     + "]: cannot find execution node"
                     + " (has the job already finished?)");
             return false;
@@ -272,7 +272,7 @@ public class XmlRpcResourceManager implements ResourceManager{
     public String getExecutionNode(String jobId) {
         String execNode = scheduler.getBatchmgr().getExecutionNode(jobId);
         if (execNode == null) {
-            LOG.log(Level.WARNING, "Job: [" + jobId
+            LOG.warn("Job: [" + jobId
                     + "] not currently executing on any known node");
             return "";
         } else {
@@ -468,7 +468,7 @@ public class XmlRpcResourceManager implements ResourceManager{
     	try{
     		this.scheduler.getMonitor().getNodeById(nodeId).setCapacity(capacity);
     	}catch (MonitorException e){
-    		LOG.log(Level.WARNING, "Exception setting capacity on node "
+    		LOG.warn("Exception setting capacity on node "
     				+ nodeId + ": " + e.getMessage());
     		return false;
     	}
@@ -497,7 +497,7 @@ public class XmlRpcResourceManager implements ResourceManager{
         try {
             jobId = scheduler.getJobQueue().addJob(spec);
         } catch (JobQueueException e) {
-            LOG.log(Level.WARNING, "JobQueue exception adding job: Message: "
+            LOG.warn("JobQueue exception adding job: Message: "
                     + e.getMessage());
             throw new SchedulerException(e.getMessage());
         }
@@ -536,7 +536,7 @@ public class XmlRpcResourceManager implements ResourceManager{
         try {
             url = new URL(urlStr);
         } catch (MalformedURLException e) {
-            LOG.log(Level.WARNING, "Error converting string: [" + urlStr
+            LOG.warn("Error converting string: [" + urlStr
                     + "] to URL object: Message: " + e.getMessage());
         }
 

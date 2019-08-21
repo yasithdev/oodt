@@ -19,8 +19,6 @@ package org.apache.oodt.cas.workflow.engine.runner;
 //JDK imports
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
@@ -28,6 +26,8 @@ import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 //Google imports
 import com.google.common.base.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -38,7 +38,7 @@ import com.google.common.base.Preconditions;
  */
 public class ResourceRunnerFactory implements EngineRunnerFactory{
 
-   private static final Logger LOG = Logger.getLogger(ResourceRunnerFactory.class.getName());
+   private static final Logger LOG = LoggerFactory.getLogger(ResourceRunnerFactory.class.getName());
 
    private static final String RESOURCE_MANAGER_URL_PROPERTY = "org.apache.oodt.cas.workflow.engine.resourcemgr.url";
 
@@ -58,7 +58,7 @@ public class ResourceRunnerFactory implements EngineRunnerFactory{
                      + RESOURCE_MANAGER_URL_PROPERTY + "]");
          return new ResourceRunner(new URL(resUrl), getWorkflowInstanceRepository());
       } catch (MalformedURLException e) {
-         LOG.log(Level.SEVERE, "Failed to load ResourceRunner : " + e.getMessage(), e);
+         LOG.error("Failed to load ResourceRunner : " + e.getMessage(), e);
          return null;
       }
    }

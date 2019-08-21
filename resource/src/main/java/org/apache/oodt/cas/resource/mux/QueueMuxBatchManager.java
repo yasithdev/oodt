@@ -20,8 +20,6 @@ package org.apache.oodt.cas.resource.mux;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
 import org.apache.oodt.cas.resource.jobrepo.JobRepository;
@@ -31,6 +29,8 @@ import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author starchmd
@@ -40,7 +40,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
  */
 public class QueueMuxBatchManager implements Batchmgr {
 
-    private Logger LOG = Logger.getLogger(QueueMuxBatchManager.class.getName());
+    private Logger LOG = LoggerFactory.getLogger(QueueMuxBatchManager.class.getName());
 
     BackendManager backend;
     Map<String,String> jobIdToQueue = new ConcurrentHashMap<String,String>();
@@ -72,7 +72,7 @@ public class QueueMuxBatchManager implements Batchmgr {
             return getManagerByQueue(job.getJob().getQueueName()).executeRemotely(job, resNode);
         } catch (QueueManagerException e) {
             jobIdToQueue.remove(job.getJob().getQueueName());
-            LOG.log(Level.WARNING, "Exception recieved while executing job: "+e.getLocalizedMessage()+". Job will not execute.");
+            LOG.warn("Exception recieved while executing job: "+e.getLocalizedMessage()+". Job will not execute.");
             throw new JobExecutionException(e);
         }
     }
@@ -107,7 +107,7 @@ public class QueueMuxBatchManager implements Batchmgr {
         try {
             return getManagerByJob(jobId).killJob(jobId,node);
         } catch (QueueManagerException e) {
-            LOG.log(Level.SEVERE, "Cannot kill job: "+e.getLocalizedMessage());
+            LOG.error("Cannot kill job: "+e.getLocalizedMessage());
         }
         return false;
     }
@@ -120,7 +120,7 @@ public class QueueMuxBatchManager implements Batchmgr {
         try {
             return getManagerByJob(jobId).getExecutionNode(jobId);
         } catch (QueueManagerException e) {
-            LOG.log(Level.SEVERE, "Cannot get exectuion node for job: "+e.getLocalizedMessage());
+            LOG.error("Cannot get exectuion node for job: "+e.getLocalizedMessage());
         }
         return null;
     }

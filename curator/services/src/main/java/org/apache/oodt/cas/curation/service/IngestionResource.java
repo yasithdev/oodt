@@ -46,12 +46,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -87,7 +87,7 @@ public class IngestionResource extends CurationService {
 
   private static final long serialVersionUID = -7514150767897700936L;
 
-  private static final Logger LOG = Logger
+  private static final Logger LOG = LoggerFactory
       .getLogger(IngestionResource.class.getName());
 
   private static final String DATA_TRANSFER_SERVICE = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
@@ -126,10 +126,10 @@ public class IngestionResource extends CurationService {
           new File(CurationService.config.getMetExtrConfUploadPath()),
           metExtractorConfigId));
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       String errorMsg = "Unable to load extractor config from metExtCfgId: ["
           + metExtractorConfigId + "]";
-      LOG.log(Level.WARNING, errorMsg);
+      LOG.warn(errorMsg);
       return errorMsg;
     }
     newTask.setFileList(deducePaths(Arrays.asList(fileList.split(","))));
@@ -178,7 +178,7 @@ public class IngestionResource extends CurationService {
     if (task == null) {
       String errorMsg = "Task with ID [" + ingestTaskId
           + "] is not being managed by this Ingestion Resource!";
-      LOG.log(Level.WARNING, errorMsg);
+      LOG.warn(errorMsg);
       return this.encodeIngestResponseAsJSON(false, errorMsg);
     }
 
@@ -189,13 +189,13 @@ public class IngestionResource extends CurationService {
       try {
         String vFilePath = this
             .getVirtualPath(CurationService.config.getStagingAreaPath(), file);
-        LOG.log(Level.FINE,
+        LOG.info(
             "IngestionResource: getting staging metadata for virtual path: ["
                 + vFilePath + "]");
         fileMet = metService.getStagingMetadata(vFilePath,
             task.getExtConf().getIdentifier(), false);
       } catch (Exception e) {
-        LOG.log(Level.SEVERE, e.getMessage());
+        LOG.error(e.getMessage());
         return this.encodeIngestResponseAsHTML(false, e.getMessage());
       }
 
@@ -203,7 +203,7 @@ public class IngestionResource extends CurationService {
         ingest.ingest(safeGetUrl(CurationService.config.getFileMgrURL()),
             new File(file), fileMet);
       } catch (IngestException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
+        LOG.error(e.getMessage());
         return this.encodeIngestResponseAsHTML(false, e.getMessage());
       }
 
@@ -309,7 +309,7 @@ public class IngestionResource extends CurationService {
     try {
       return new URL(urlStr);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       return null;
     }
   }
@@ -334,7 +334,7 @@ public class IngestionResource extends CurationService {
     try {
       return fullFilePath.substring(startIdx);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       return null;
     }
   }
@@ -354,7 +354,7 @@ public class IngestionResource extends CurationService {
       Document document = buildXMLDocument(stateFile);
       rebuildTaskList(document);
     } catch (Exception e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "parseXMLState: Unable to process saved TaskList state");
     }
   }
@@ -511,14 +511,14 @@ public class IngestionResource extends CurationService {
         serializer.serialize(xmlDocument.getDocumentElement());
         fos.close();
       } catch (ParserConfigurationException e) {
-        LOG.log(Level.WARNING,
+        LOG.warn(
             "IngestionTaskList: Unable to generate XML from task list when exporting to file.");
       } catch (FileNotFoundException e) {
-        LOG.log(Level.WARNING,
+        LOG.warn(
             "IngestionTaskList: Unable to open file for XML output at "
                 + fileName);
       } catch (IOException e) {
-        LOG.log(Level.WARNING,
+        LOG.warn(
             "IngestionTaskList: IOException while serializing XML.");
       }
     }

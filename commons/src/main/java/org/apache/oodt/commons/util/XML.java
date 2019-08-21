@@ -60,6 +60,8 @@
 
 package org.apache.oodt.commons.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -83,7 +85,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -105,7 +106,7 @@ import javax.xml.transform.stream.StreamResult;
  * @author Kelly
  */
 public class XML {
-  private static Logger LOG = Logger.getLogger(XML.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(XML.class.getName());
 	private static DocumentBuilder getStandardDocumentBuilder() {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

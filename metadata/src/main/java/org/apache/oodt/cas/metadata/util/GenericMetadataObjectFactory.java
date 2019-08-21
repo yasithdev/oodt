@@ -20,10 +20,8 @@ package org.apache.oodt.cas.metadata.util;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.MetExtractor;
-
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -36,7 +34,7 @@ import java.util.logging.Logger;
 public final class GenericMetadataObjectFactory {
 
   /* our log stream */
-  private final static Logger LOG = Logger
+  private final static Logger LOG = LoggerFactory
       .getLogger(GenericMetadataObjectFactory.class.getName());
 
   public static MetExtractor getMetExtractorFromClassName(String className) {
@@ -48,20 +46,20 @@ public final class GenericMetadataObjectFactory {
       extractor = (MetExtractor) metExtractorClass.newInstance();
       return extractor;
     } catch (ClassNotFoundException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage(), e);
+      LOG.warn(
           "ClassNotFoundException when loading met extractor class "
-              + className + " Message: " + e.getMessage());
+              + className + " Message: " + e.getMessage(), e);
     } catch (InstantiationException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage(), e);
+      LOG.warn(
           "InstantiationException when loading met extractor class "
-              + className + " Message: " + e.getMessage());
+              + className + " Message: " + e.getMessage(), e);
     } catch (IllegalAccessException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage(), e);
+      LOG.warn(
           "IllegalAccessException when loading met extractor class "
-              + className + " Message: " + e.getMessage());
+              + className + " Message: " + e.getMessage(), e);
     }
 
     return null;

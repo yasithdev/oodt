@@ -27,6 +27,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.commons.exceptions.CommonsException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -38,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 
 /**
@@ -52,7 +53,7 @@ import java.util.logging.Logger;
 public final class XmlStructFactory {
 
   /* our log stream */
-  public static Logger LOG = Logger.getLogger(XmlStructFactory.class.getName());
+  public static Logger LOG = LoggerFactory.getLogger(XmlStructFactory.class);
 
   private XmlStructFactory() throws InstantiationException {
     throw new InstantiationException("Don't instantiate XML Struct Factories!");
@@ -248,7 +249,7 @@ public final class XmlStructFactory {
         }
         List<String> values = new Vector<String>();
         if (delim.length() > 0) {
-          values.addAll(Arrays.asList(value.split("\\" + delim)));
+          values.addAll(Arrays.asList(value.split("\\\\" + delim)));
         } else {
           values.add(value);
         }

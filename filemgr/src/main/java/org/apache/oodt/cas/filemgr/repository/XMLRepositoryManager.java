@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.repository;
 
 //OODT imports
+import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.util.XmlStructFactory;
@@ -32,10 +33,11 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -63,8 +65,7 @@ public class XMLRepositoryManager implements RepositoryManager {
     private ConcurrentHashMap<String, ProductType> productTypeMap = new ConcurrentHashMap<String, ProductType>();
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(XMLRepositoryManager.class
-            .getName());
+    private static final Logger logger = LoggerFactory.getLogger(XMLRepositoryManager.class);
 
     /**
      * 
@@ -138,7 +139,7 @@ public class XMLRepositoryManager implements RepositoryManager {
         }
       }
 
-        LOG.log(Level.WARNING,
+        logger.warn(
                 "XMLRepositoryManager: Unable to find product type: ["
                         + productTypeName + "], returning null");
 
@@ -162,9 +163,7 @@ public class XMLRepositoryManager implements RepositoryManager {
           productTypeDir = new File(new URI(dirUri));
 
           if (!productTypeDir.isDirectory()) {
-            LOG
-                .log(
-                    Level.WARNING,
+            logger.warn(
                     "Product type directory: "
                     + dirUri
                     + " is not "
@@ -183,11 +182,11 @@ public class XMLRepositoryManager implements RepositoryManager {
                   .asList(productTypeMap.values().toArray(new ProductType[productTypeMap.values().size()])),
               productTypeXmlFile);
         } catch (URISyntaxException e) {
-          LOG.log(Level.WARNING,
+          logger.warn(
               "URISyntaxException when saving product "
               + "type directory URI: " + dirUri
               + ": Skipping Product Type saving"
-              + "for it: Message: " + e.getMessage());
+              + "for it: Message: " + e.getMessage(), e);
         }
 
       }
@@ -203,9 +202,7 @@ public class XMLRepositoryManager implements RepositoryManager {
           productTypeDir = new File(new URI(dirUri));
 
           if (!productTypeDir.isDirectory()) {
-            LOG
-                .log(
-                    Level.WARNING,
+            logger.warn(
                     "Product type directory: "
                     + dirUri
                     + " is not "
@@ -236,7 +233,7 @@ public class XMLRepositoryManager implements RepositoryManager {
                 Node productTypeNode = productTypeNodeList.item(j);
                 ProductType type = XmlStructFactory
                     .getProductType(productTypeNode);
-                LOG.log(Level.FINE,
+                logger.info(
                     "XMLRepositoryManager: found product type: ["
                     + type.getName() + "]");
                 productTypeMap.put(type.getProductTypeId(), type);
@@ -244,11 +241,11 @@ public class XMLRepositoryManager implements RepositoryManager {
             }
           }
         } catch (URISyntaxException e) {
-          LOG.log(Level.WARNING,
+          logger.warn(
               "URISyntaxException when loading product "
               + "type directory URI: " + dirUri
               + ": Skipping Product Type loading"
-              + "for it: Message: " + e.getMessage());
+              + "for it: Message: " + e.getMessage(), e);
         }
       }
     }
@@ -265,9 +262,9 @@ public class XMLRepositoryManager implements RepositoryManager {
         try {
             xmlInputStream = new File(xmlFile).toURI().toURL().openStream();
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
+            logger.warn(
                     "IOException when getting input stream from [" + xmlFile
-                            + "]: returning null document root");
+                            + "]: returning null document root", e);
             return null;
         }
 
@@ -278,8 +275,8 @@ public class XMLRepositoryManager implements RepositoryManager {
             parser = factory.newDocumentBuilder();
             document = parser.parse(inputSource);
         } catch (Exception e) {
-            LOG.warning("Unable to parse xml file [" + xmlFile + "]."
-                    + "Reason is [" + e + "]");
+            logger.warn("Unable to parse xml file [" + xmlFile + "]."
+                    + "Reason is [" + e.getLocalizedMessage() + "]", e);
             return null;
         }
 

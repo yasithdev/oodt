@@ -31,6 +31,8 @@ import org.apache.oodt.xmlquery.Result;
 import org.apache.oodt.xmlquery.XMLQuery;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeTypesFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,8 +42,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -56,7 +56,7 @@ import java.util.logging.Logger;
 public class OFSNFileHandler implements LargeProductQueryHandler,
     XMLQueryMetKeys, OFSNXMLMetKeys, OFSNMetKeys, OFSNXMLConfigMetKeys {
 
-  private static final Logger LOG = Logger
+  private static final Logger LOG = LoggerFactory
       .getLogger(OFSNFileHandler.class.getName());
 
   private static final String CMD_SEPARATOR = ";";
@@ -133,7 +133,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
         MediaType mediaType = MediaType
             .parse(cfg.getHandlerConf().getProperty(PROPERTY_MIMETYPE_ATTR));
         if (mediaType == null) {
-          LOG.log(Level.WARNING,
+          LOG.warn(
               "MIME type ["
                   + cfg.getHandlerConf().getProperty(PROPERTY_MIMETYPE_ATTR)
                   + "] specified " + "for handler [" + cfg.getClassName()
@@ -229,7 +229,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
       return (OFSNListHandler) HANDLER_CACHE.get(rtType);
     } else {
       OFSNListHandler handler = OFSNObjectFactory.getListHandler(className);
-      LOG.log(Level.INFO, "Getting handler config for RT: [" + rtType + "]");
+      LOG.info("Getting handler config for RT: [" + rtType + "]");
       handler.configure(this.conf.getHandlerConfig(rtType).getHandlerConf());
       HANDLER_CACHE.put(rtType, handler);
       return handler;

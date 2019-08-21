@@ -18,8 +18,6 @@
 package org.apache.oodt.cas.wmservices.resources;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -28,6 +26,8 @@ import javax.ws.rs.Path;
 
 import org.apache.oodt.cas.wmservices.repository.PackagedWorkflowManager;
 import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Jax-RS server functions for adding/deleting workflows
@@ -35,7 +35,7 @@ import org.apache.oodt.cas.workflow.structs.Workflow;
  * @author vratnakar
  */
 public class WorkflowResource extends AbstractWorkflowServiceResource {
-  private static final Logger LOGGER = Logger.getLogger(WorkflowResource.class
+  private static final Logger LOG = LoggerFactory.getLogger(WorkflowResource.class
       .getName());
 
   /**
@@ -69,7 +69,7 @@ public class WorkflowResource extends AbstractWorkflowServiceResource {
     } catch (Exception e) {
       String message = "Unable to add workflow. ";
       message += e.getMessage();
-      LOGGER.log(Level.SEVERE, message);
+      LOG.error(message, e);
       throw e;
     }
   }
@@ -94,7 +94,7 @@ public class WorkflowResource extends AbstractWorkflowServiceResource {
     } catch (Exception e) {
       String message = "Unable to delete workflow. ";
       message += e.getMessage();
-      LOGGER.log(Level.SEVERE, message);
+      LOG.error(message, e);
       throw e;
     }
   }

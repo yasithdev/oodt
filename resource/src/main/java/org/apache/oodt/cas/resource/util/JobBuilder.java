@@ -23,12 +23,12 @@ package org.apache.oodt.cas.resource.util;
 import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.commons.xml.XMLUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  * </p>.
  */
 public final class JobBuilder {
-    private static Logger LOG = Logger.getLogger(JobBuilder.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(JobBuilder.class.getName());
     private JobBuilder() throws InstantiationException {
         throw new InstantiationException("Don't construct utility classes!");
     }
@@ -56,7 +56,7 @@ public final class JobBuilder {
             doc = XMLUtils.getDocumentRoot(new FileInputStream(new File(
                     jobFilePath)));
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage());
             return null;
         }
         return XmlStructFactory.getJobSpec(doc.getDocumentElement());

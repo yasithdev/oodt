@@ -25,9 +25,9 @@ import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.JobInstance;
 import org.apache.oodt.cas.resource.structs.NameValueJobInput;
 import org.apache.oodt.cas.resource.structs.exceptions.JobInputException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * </p>
  */
 public class LongJob implements JobInstance, JobMetadata {
-    private static Logger LOG = Logger.getLogger(LongJob.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(LongJob.class.getName());
     /*
      * (non-Javadoc)
      * 
@@ -62,7 +62,7 @@ public class LongJob implements JobInstance, JobMetadata {
         try {
             Thread.sleep(waitTime * 1000);
         } catch (InterruptedException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage());
         }
 
         System.out.println("LongJob finished.");

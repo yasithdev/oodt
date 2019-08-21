@@ -23,10 +23,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -44,7 +45,7 @@ import org.xml.sax.InputSource;
 public final class TaskPolicyReader {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(TaskPolicyReader.class
+    private static final Logger LOG = LoggerFactory.getLogger(TaskPolicyReader.class
             .getName());
 
     private TaskPolicyReader() throws InstantiationException {
@@ -106,9 +107,7 @@ public final class TaskPolicyReader {
                         }
                     }
                 } catch (URISyntaxException e) {
-                    LOG
-                            .log(
-                                    Level.WARNING,
+                    LOG.warn(
                                     "DirUri: "
                                             + dirUri
                                             + " is not a directory: skipping task loading for it.");
@@ -162,9 +161,7 @@ public final class TaskPolicyReader {
                         }
                     }
                 } catch (URISyntaxException e) {
-                    LOG
-                            .log(
-                                    Level.WARNING,
+                    LOG.warn(
                                     "DirUri: "
                                             + dirUri
                                             + " is not a directory: skipping condition loading for it.");
@@ -188,7 +185,7 @@ public final class TaskPolicyReader {
         try {
             xmlInputStream = new File(xmlFile).toURL().openStream();
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
+            LOG.warn(
                     "IOException when getting input stream from [" + xmlFile
                             + "]: returning null document root");
             return null;
@@ -201,7 +198,7 @@ public final class TaskPolicyReader {
             parser = factory.newDocumentBuilder();
             document = parser.parse(inputSource);
         } catch (Exception e) {
-            LOG.warning("Unable to parse xml file [" + xmlFile + "]."
+            LOG.warn("Unable to parse xml file [" + xmlFile + "]."
                     + "Reason is [" + e + "]");
             return null;
         }

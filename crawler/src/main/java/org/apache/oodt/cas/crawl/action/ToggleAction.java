@@ -19,7 +19,6 @@ package org.apache.oodt.cas.crawl.action;
 //JDK imports
 import java.io.File;
 import java.util.List;
-import java.util.logging.Level;
 
 //OODT imports
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
@@ -54,9 +53,9 @@ public class ToggleAction extends CrawlerAction {
                   }
                }
             } catch (Exception e) {
-               LOG.log(Level.WARNING, "Failed to run toggle action '"
+               LOG.warn("Failed to run toggle action '"
                      + (currentAction != null ? currentAction.getId() : null)
-                     + "' : " + e.getMessage());
+                     + "' : " + e.getMessage(), e);
             }
          }
          return globalSuccess;

@@ -62,7 +62,7 @@ public class LogInit {
 		LogEventMultiplexer mux = new LogEventMultiplexer();
 
 		// One destination out of the multiplexer is the in-memory round-robin logger.
-		mux.addListener(MEMORY_LOGGER);
+		mux.addListener(MEMORY_LOG);
 
 		// Another destination is any user-specified logger.
 		String userSpecifiedListener = props.getProperty("org.apache.oodt.commons.util.LogInit.listener");
@@ -122,6 +122,6 @@ public class LogInit {
 	}
 
 	/** The single memory logger for an application. */
-	public static final MemoryLogger MEMORY_LOGGER = new MemoryLogger();
+	public static final MemoryLogger MEMORY_LOG = new MemoryLogger();
 }
 

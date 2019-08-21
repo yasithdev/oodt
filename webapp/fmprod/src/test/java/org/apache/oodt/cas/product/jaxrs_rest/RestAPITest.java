@@ -2,7 +2,6 @@ package org.apache.oodt.cas.product.jaxrs_rest;
 
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
-import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
 import org.apache.oodt.cas.product.jaxrs.services.CasProductJaxrsService;

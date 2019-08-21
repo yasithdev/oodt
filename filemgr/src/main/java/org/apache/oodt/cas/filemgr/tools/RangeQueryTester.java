@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //Lucene imports
 import org.apache.lucene.document.Document;
@@ -31,6 +29,8 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -59,7 +59,7 @@ public final class RangeQueryTester {
     private String indexPath = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(RangeQueryTester.class
+    private static final Logger logger = LoggerFactory.getLogger(RangeQueryTester.class
             .getName());
 
     DirectoryReader reader;
@@ -137,16 +137,16 @@ public final class RangeQueryTester {
                     products.add(productDoc.get("reference_data_store"));
                 }
             } else {
-                LOG.log(Level.WARNING, "Query: [" + query1
+                logger.warn("Query: [" + query1
                         + "] for Product Type: [" + productTypeId
                         + "] returned no results");
             }
 
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
+            logger.warn(
                     "IOException when opening index directory: ["
                             + this.indexPath + "] for search: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         } finally {
             if (searcher != null) {
