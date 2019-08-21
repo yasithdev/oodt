@@ -25,13 +25,13 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 
 import org.junit.Ignore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 @Ignore
 public class SimpleTester implements WorkflowTaskInstance {
 
-  private static final Logger LOG = Logger.getLogger(SimpleTester.class
+  private static final Logger LOG = LoggerFactory.getLogger(SimpleTester.class
       .getName());
 
   /*
@@ -68,7 +68,7 @@ public class SimpleTester implements WorkflowTaskInstance {
         + n + metadata.getMetadata("StartDateTime") + ".job";
         n++;
       }
-      LOG.log(Level.INFO, "Creating job file: [" + jobFilePath + "]");
+      LOG.info("Creating job file: [" + jobFilePath + "]");
       pw = new PrintWriter(new FileOutputStream(jobFilePath));
       pw.println("StartDateTime=" + metadata.getMetadata("StartDateTime"));
     } catch (FileNotFoundException e) {

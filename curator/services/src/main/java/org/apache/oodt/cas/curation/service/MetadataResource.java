@@ -44,6 +44,8 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletContext;
@@ -70,8 +72,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Path("metadata")
 /**
@@ -100,7 +100,7 @@ public class MetadataResource extends CurationService {
   public static final String UPDATE = "update";
 
   public static final String DELETE = "delete";
-  private static Logger LOG = Logger.getLogger(MetadataResource.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(MetadataResource.class.getName());
   // single instance of CAS catalog shared among all requests
   private Catalog catalog = null;
 
@@ -275,7 +275,7 @@ public class MetadataResource extends CurationService {
       prod = fmClient.getProductById(productId);
       this.updateCatalogMetadata(prod, metadata);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       return "<div class=\"error\">" + e.getMessage() + "</div>";
     }
 
@@ -451,7 +451,7 @@ public class MetadataResource extends CurationService {
     try(    FileManagerClient fmClient = CurationService.config.getFileManagerClient()){
       return fmClient.getMetadata(fmClient.getProductById(product.getProductId()));
     } catch (IOException e){
-      LOG.severe("Error occurred when fetching catalog metadata for product: " +
+      LOG.error("Error occurred when fetching catalog metadata for product: " +
               product.getProductName() + " :" + e.getMessage());
       return null;
     }
@@ -551,7 +551,7 @@ public class MetadataResource extends CurationService {
       return "id="+product.getProductId();
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       // return error message
       throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
     }
@@ -631,7 +631,7 @@ public class MetadataResource extends CurationService {
 		  return "id="+product.getProductId();
 
 	  } catch (Exception e) {
-		  LOG.log(Level.SEVERE, e.getMessage());
+		  LOG.error(e.getMessage());
 		  // return error message
 		  throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
 
@@ -652,7 +652,7 @@ public class MetadataResource extends CurationService {
 	try (FileManagerClient fmClient = CurationService.config.getFileManagerClient()){
 	  fmClient.removeProduct(product);
     } catch (IOException e) {
-      LOG.severe(String.format("Couldn't detele product - %s : %s", product.getProductName(), e.getMessage()));
+      LOG.error(String.format("Couldn't detele product - %s : %s", product.getProductName(), e.getMessage()));
       throw new CatalogException("Unable to delete product", e);
     }
   }
@@ -694,7 +694,7 @@ public class MetadataResource extends CurationService {
         try (FileManagerClient fmClient = CurationService.config.getFileManagerClient()) {
             fmClient.refreshConfigAndPolicy();
         } catch (IOException e) {
-            LOG.severe(String.format("Unable to refresh config and policy: %s", e.getMessage()));
+            LOG.error(String.format("Unable to refresh config and policy: %s", e.getMessage()));
         }
 
         return productType.getTypeMetadata();
@@ -735,7 +735,7 @@ public class MetadataResource extends CurationService {
       xmlRepo.removeProductType(type);
       return true;
     } catch (RepositoryManagerException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       return false;
     }
   }
@@ -763,7 +763,7 @@ public class MetadataResource extends CurationService {
       vLayer.addParentForProductType(type, parentId);
       return true;
     } catch (RepositoryManagerException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
     }
     return false;
   }
@@ -782,7 +782,7 @@ public class MetadataResource extends CurationService {
       vLayer.removeParentForProductType(type);
       return true;
     } catch (RepositoryManagerException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
     }
     return false;
   }
@@ -808,7 +808,7 @@ public class MetadataResource extends CurationService {
       }
       return true;
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
     }
     return false;
   }
@@ -830,7 +830,7 @@ public class MetadataResource extends CurationService {
       }
       return JSONSerializer.toJSON(elementIds).toString();
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
     }
     return null;
   }
@@ -852,7 +852,7 @@ public class MetadataResource extends CurationService {
       this.removeUnusedElements(elementList, xmlRepo, vLayer);
       return true;
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
     }
     return false;
   }
@@ -879,7 +879,7 @@ public class MetadataResource extends CurationService {
       this.removeUnusedElements(elements, xmlRepo, vLayer);
       return true;
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
     }
     return false;
   }
@@ -902,7 +902,7 @@ public class MetadataResource extends CurationService {
     		  }
     	  }
       } catch (Exception e) {
-          LOG.log(Level.SEVERE, e.getMessage());
+          LOG.error(e.getMessage());
       }
       return JSONSerializer.toJSON(typeids).toString();
   }
@@ -938,7 +938,7 @@ public class MetadataResource extends CurationService {
 		try {
 			xmlRepo = new XMLRepositoryManager(Collections.singletonList(url));
 		} catch (Exception e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage());
 		}
 
 		return xmlRepo;
@@ -951,7 +951,7 @@ public class MetadataResource extends CurationService {
 		try {
 			vLayer = new XMLValidationLayer(Collections.singletonList(url));
 		} catch (Exception e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return vLayer;
 	}

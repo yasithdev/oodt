@@ -22,13 +22,13 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.system.FileManagerServer;
 import org.apache.oodt.cas.filemgr.system.rpc.FileManagerClientFactory;
 import org.apache.oodt.cas.filemgr.system.rpc.FileManagerServerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  */
 public class RpcCommunicationFactory {
 
-    private static Logger LOG = Logger.getLogger(RpcCommunicationFactory.class
+    private static Logger LOG = LoggerFactory.getLogger(RpcCommunicationFactory.class
             .getName());
 
     private static String getClientFactoryName(){
@@ -57,12 +57,12 @@ public class RpcCommunicationFactory {
         if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
             String configFile = System.getProperty("org.apache.oodt.cas.filemgr.properties");
 
-            LOG.log(Level.INFO, "Loading File Manager Configuration Properties from: [" + configFile + "]");
+            LOG.info("Loading File Manager Configuration Properties from: [" + configFile + "]");
 
             try {
                 System.getProperties().load(new FileInputStream(new File(configFile)));
             } catch (Exception e) {
-                LOG.log(Level.INFO, "Error loading configuration properties from: [" + configFile + "]");
+                LOG.info("Error loading configuration properties from: [" + configFile + "]");
             }
         }
     }
@@ -129,18 +129,18 @@ public class RpcCommunicationFactory {
         String serverFactory = System.getProperty("filemgr.server",
                 "org.apache.oodt.cas.filemgr.system.rpc.AvroFileManagerServerFactory");
 
-        LOG.log(Level.INFO, "Init. server's factory class: " + serverFactory);
+        LOG.info("Init. server's factory class: " + serverFactory);
 
         try {
             FileManagerServerFactory fmsf= (FileManagerServerFactory) Class.forName(serverFactory).newInstance();
             fmsf.setPort(port);
             return fmsf.createFileManagerServer();
         } catch (InstantiationException e) {
-            LOG.log(Level.SEVERE, "Could not start FileManager server reason", e);
+            LOG.error("Could not start FileManager server reason", e);
         } catch (IllegalAccessException e) {
-            LOG.log(Level.SEVERE, "Could not start FileManager server reason", e);
+            LOG.error("Could not start FileManager server reason", e);
         } catch (ClassNotFoundException e) {
-            LOG.log(Level.SEVERE, "Could not start FileManager server reason", e);
+            LOG.error("Could not start FileManager server reason", e);
         }
         return null;
     }

@@ -26,12 +26,12 @@ import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 //APACHE imports
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.io.IOException;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -48,7 +48,7 @@ import java.util.logging.Logger;
  */
 public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
 
-	private static final Logger LOG = Logger.getLogger(XmlRpcBatchMgrProxy.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(XmlRpcBatchMgrProxy.class.getName());
 	
     private JobSpec jobSpec;
 
@@ -92,10 +92,10 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
         try {
             result = (Boolean) client.execute("batchstub.killJob", argList);
         } catch (XmlRpcException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage());
             result = false;
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage());
             result = false;
         }
 
@@ -123,7 +123,7 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
                 throw new Exception("batchstub.executeJob returned false");
             }
         } catch (Exception e) {
-        	LOG.log(Level.SEVERE, "Job execution failed for jobId '" + jobSpec.getJob().getId() + "' : " + e.getMessage(), e);
+        	LOG.error("Job execution failed for jobId '" + jobSpec.getJob().getId() + "' : " + e.getMessage(), e);
             parent.jobFailure(jobSpec);
         }finally {
             parent.notifyMonitor(remoteHost, jobSpec);

@@ -22,12 +22,12 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import java.net.URL;
 
 /** 
@@ -39,7 +39,7 @@ import java.net.URL;
  */
 public class InPlaceDataTransferer implements DataTransfer {
 
-  private static final Logger LOG = Logger.getLogger(InPlaceDataTransferer.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(InPlaceDataTransferer.class.getName());
 
   private FileManagerClient client = null;
 
@@ -48,10 +48,10 @@ public class InPlaceDataTransferer implements DataTransfer {
   public void setFileManagerUrl(URL url) {
     try {
       client = RpcCommunicationFactory.createClient(url);
-      LOG.log(Level.INFO, "In Place Data Transfer to: [" + client.getFileManagerUrl().toString()
+      LOG.info("In Place Data Transfer to: [" + client.getFileManagerUrl().toString()
           + "] enabled");
     } catch (ConnectionException e) {
-      LOG.log(Level.WARNING, "Connection exception for filemgr: [" + url + "]");
+      LOG.warn("Connection exception for filemgr: [" + url + "]");
     }
   }
 

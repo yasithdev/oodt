@@ -22,13 +22,13 @@ import org.apache.oodt.security.sso.opensso.SSOMetKeys;
 import org.apache.oodt.security.sso.opensso.SSOProxy;
 import org.apache.oodt.security.sso.opensso.SingleSignOnException;
 import org.apache.oodt.security.sso.opensso.UserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.Cookie;
 
@@ -41,7 +41,7 @@ import javax.servlet.http.Cookie;
 public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
     SSOMetKeys {
 
-  private static final Logger LOG = Logger.getLogger(OpenSSOImpl.class
+  private static final Logger LOG = LoggerFactory.getLogger(OpenSSOImpl.class
       .getName());
 
   private SSOProxy ssoProxy;
@@ -64,7 +64,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
         try {
           details = this.ssoProxy.getUserAttributes(ssoToken);
         } catch (Exception e) {
-          LOG.log(Level.SEVERE, e.getMessage());
+          LOG.error(e.getMessage());
           return UNKNOWN_USER;
         }
         return details.getAttributes().getMetadata(UID_ATTRIBUTE_NAME) != null ? details
@@ -92,7 +92,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
     try {
       ssoToken = this.ssoProxy.authenticate(username, password);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       return false;
     }
 

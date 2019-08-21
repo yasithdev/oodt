@@ -16,6 +16,8 @@
  */
 package org.apache.oodt.cas.resource.batchmgr;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
@@ -95,7 +97,7 @@ public class MesosBatchManager implements Batchmgr {
      */
     @Override
     public boolean killJob(String jobId, ResourceNode node) {
-        TaskID id = (TaskID)map.get(jobId);
+        TaskID id = (TaskID) map.get(jobId);
         driver.killTask(id);
         Status status = driver.killTask(id);
         if (status != Status.DRIVER_RUNNING)
@@ -110,6 +112,12 @@ public class MesosBatchManager implements Batchmgr {
     public String getExecutionNode(String jobId) {
         // TODO Make this more meaningful.
         return "All Your Jobs are belong to Mesos";
+    }
+
+    @Override
+    public List getJobsOnNode(String nodeId) {
+        // TODO (yasith) implement this
+        return Collections.emptyList();
     }
 
 }

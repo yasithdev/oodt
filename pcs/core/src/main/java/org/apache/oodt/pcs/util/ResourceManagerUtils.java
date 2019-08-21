@@ -22,12 +22,12 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.resource.system.ResourceManagerClient;
 import org.apache.oodt.cas.resource.system.rpc.ResourceManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A set of utility methods that can be used by PCS that need to
@@ -43,7 +43,7 @@ public class ResourceManagerUtils implements Serializable {
   private ResourceManagerClient client;
 
   /* our log stream */
-  private static final Logger LOG = Logger.getLogger(ResourceManagerUtils.class
+  private static final Logger LOG = LoggerFactory.getLogger(ResourceManagerUtils.class
       .getName());
 
   private URL rmUrl;
@@ -84,7 +84,7 @@ public class ResourceManagerUtils implements Serializable {
     try {
       return this.client.getNodes();
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain resource nodes "
+      LOG.warn("Unable to obtain resource nodes "
           + "while communicating with resource manager at: ["
           + this.client.getResMgrUrl() + "]");
       return null;
@@ -106,7 +106,7 @@ public class ResourceManagerUtils implements Serializable {
     try {
       url = new URL(urlStr);
     } catch (MalformedURLException e) {
-      LOG.log(Level.SEVERE, "PCS: Unable to generate url from url string: ["
+      LOG.error("PCS: Unable to generate url from url string: ["
           + urlStr + "]: Message: " + e.getMessage());
     }
 

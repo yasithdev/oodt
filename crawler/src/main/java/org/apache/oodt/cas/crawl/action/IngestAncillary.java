@@ -104,7 +104,7 @@ public class IngestAncillary extends FileBasedAction {
         LOG.info("Succesfully ingested ancillary file "
             + actionFile.getAbsolutePath() + " with identifier " + identifier);
       } else {
-        LOG.severe("Failed to ingest ancillary file "
+        LOG.error("Failed to ingest ancillary file "
             + actionFile.getAbsolutePath()
             + " identifer was not returned from file manager");
       }
@@ -135,9 +135,9 @@ public class IngestAncillary extends FileBasedAction {
       }
 
     } catch (Exception ex) {
-      LOG.severe("Failed to ingest ancillary file "
+      LOG.error("Failed to ingest ancillary file "
           + actionFile.getAbsolutePath());
-      LOG.severe(ex.getMessage());
+      LOG.error(ex.getMessage());
       return false;
     }
 

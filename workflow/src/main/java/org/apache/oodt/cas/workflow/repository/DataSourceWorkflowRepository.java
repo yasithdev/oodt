@@ -21,6 +21,8 @@ import org.apache.oodt.cas.workflow.examples.NoOpTask;
 import org.apache.oodt.cas.workflow.structs.*;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.DbStructFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -28,8 +30,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -46,7 +46,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
   private DataSource dataSource = null;
 
   /* our log stream */
-  private Logger LOG = Logger.getLogger(DataSourceWorkflowRepository.class
+  private Logger LOG = LoggerFactory.getLogger(DataSourceWorkflowRepository.class
       .getName());
 
   /**
@@ -91,7 +91,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       String getWorkflowSql = "SELECT * from workflows WHERE workflow_name = '"
           + workflowName + "'";
 
-      LOG.log(Level.FINE, "getWorkflowByName: Executing: " + getWorkflowSql);
+      LOG.info("getWorkflowByName: Executing: " + getWorkflowSql);
       rs = statement.executeQuery(getWorkflowSql);
 
       while (rs.next()) {
@@ -108,16 +108,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Exception getting workflow. Message: " + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(
-            Level.SEVERE,
+        LOG.error(
             "Unable to rollback getWorkflowByName transaction. Message: "
                 + e2.getMessage());
       }
@@ -184,7 +183,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       String getWorkflowSql = "SELECT * from workflows WHERE workflow_id = '"
           + workflowId + "'";
 
-      LOG.log(Level.FINE, "getWorkflowById: Executing: " + getWorkflowSql);
+      LOG.info("getWorkflowById: Executing: " + getWorkflowSql);
       rs = statement.executeQuery(getWorkflowSql);
 
       while (rs.next()) {
@@ -201,16 +200,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Exception getting workflow. Message: " + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(
-            Level.SEVERE,
+        LOG.error(
             "Unable to rollback getWorkflowById transaction. Message: "
                 + e2.getMessage());
       }
@@ -270,7 +268,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
       String getWorkflowSql = "SELECT * from workflows";
 
-      LOG.log(Level.FINE, "getWorkflows: Executing: " + getWorkflowSql);
+      LOG.info("getWorkflows: Executing: " + getWorkflowSql);
       rs = statement.executeQuery(getWorkflowSql);
       workflows = new Vector();
 
@@ -294,16 +292,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Exception getting workflows. Message: " + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(
-            Level.SEVERE,
+        LOG.error(
             "Unable to rollback getWorkflows transaction. Message: "
                 + e2.getMessage());
       }
@@ -359,7 +356,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           + " "
           + "ORDER BY workflow_task_map.task_order";
 
-      LOG.log(Level.FINE, "getTasksByWorkflowId: Executing: " + getTasksSql);
+      LOG.info("getTasksByWorkflowId: Executing: " + getTasksSql);
       rs = statement.executeQuery(getTasksSql);
       tasks = new Vector();
 
@@ -380,15 +377,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Exception getting tasks for workflow. Message: "
+      LOG.error(e.getMessage());
+      LOG.warn("Exception getting tasks for workflow. Message: "
           + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getTasksByWorkflowId transaction. Message: "
                 + e2.getMessage());
       }
@@ -445,7 +442,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           + "' "
           + "ORDER BY workflow_task_map.task_order";
 
-      LOG.log(Level.FINE, "getTasksByWorkflowName: Executing: " + getTasksSql);
+      LOG.info("getTasksByWorkflowName: Executing: " + getTasksSql);
       rs = statement.executeQuery(getTasksSql);
       tasks = new Vector();
 
@@ -465,15 +462,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Exception getting tasks for workflow. Message: "
+      LOG.error(e.getMessage());
+      LOG.warn("Exception getting tasks for workflow. Message: "
           + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getTasksByWorkflowName transaction. Message: "
                 + e2.getMessage());
       }
@@ -528,7 +525,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       String getWorkflowSql = "SELECT * from workflows, event_workflow_map WHERE event_workflow_map.workflow_id = workflows.workflow_id  "
           + "AND event_workflow_map.event_name = '" + eventName + "'";
 
-      LOG.log(Level.FINE, "getWorkflowsForEvent: Executing: " + getWorkflowSql);
+      LOG.info("getWorkflowsForEvent: Executing: " + getWorkflowSql);
       rs = statement.executeQuery(getWorkflowSql);
       workflows = new Vector();
 
@@ -552,15 +549,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Exception getting workflows for event. Message: "
+      LOG.error(e.getMessage());
+      LOG.warn("Exception getting workflows for event. Message: "
           + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getWorkflowsForEvent transaction. Message: "
                 + e2.getMessage());
       }
@@ -623,7 +620,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           + "' "
           + "ORDER BY task_condition_map.condition_order";
 
-      LOG.log(Level.FINE, "getConditionsByTaskName: Executing: "
+      LOG.info("getConditionsByTaskName: Executing: "
           + getConditionsSql);
       rs = statement.executeQuery(getConditionsSql);
       conditions = new Vector();
@@ -640,15 +637,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Exception getting conditions for task. Message: "
+      LOG.error(e.getMessage());
+      LOG.warn("Exception getting conditions for task. Message: "
           + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getConditionsByTaskName transaction. Message: "
                 + e2.getMessage());
       }
@@ -709,7 +706,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           + " "
           + "ORDER BY task_condition_map.condition_order";
 
-      LOG.log(Level.FINE, "getConditionsByTaskId: Executing: "
+      LOG.info("getConditionsByTaskId: Executing: "
           + getConditionsSql);
       rs = statement.executeQuery(getConditionsSql);
       conditions = new Vector();
@@ -726,15 +723,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Exception getting conditions for task. Message: "
+      LOG.error(e.getMessage());
+      LOG.warn("Exception getting conditions for task. Message: "
           + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getConditionsByTaskId transaction. Message: "
                 + e2.getMessage());
       }
@@ -790,7 +787,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       String getConfigurationSql = "SELECT * from workflow_task_configuration WHERE workflow_task_id = "
           + taskId;
 
-      LOG.log(Level.FINE, "getConfigurationByTaskId: Executing: "
+      LOG.info("getConfigurationByTaskId: Executing: "
           + getConfigurationSql);
       rs = statement.executeQuery(getConfigurationSql);
 
@@ -805,8 +802,8 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Exception getting task configuration for taskId: " + taskId
               + " Message: " + e.getMessage());
       try {
@@ -814,7 +811,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getConfigurationBytaskId transaction. Message: "
                 + e2.getMessage());
       }
@@ -865,7 +862,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       String getConfigurationSql = "SELECT * from workflow_condition_configuration WHERE workflow_condition_id = "
           + condId;
 
-      LOG.log(Level.FINE, "getConfigurationByConfigurationId: Executing: "
+      LOG.info("getConfigurationByConfigurationId: Executing: "
           + getConfigurationSql);
       rs = statement.executeQuery(getConfigurationSql);
 
@@ -880,8 +877,8 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Exception getting task configuration for condId: " + condId
               + " Message: " + e.getMessage());
       try {
@@ -889,7 +886,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getConfigurationByConfigurationId transaction. Message: "
                 + e2.getMessage());
       }
@@ -947,7 +944,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       String getTaskSql = "SELECT * FROM workflow_tasks WHERE workflow_task_id = "
           + taskId;
 
-      LOG.log(Level.FINE, "getWorkflowTaskById: Executing: " + getTaskSql);
+      LOG.info("getWorkflowTaskById: Executing: " + getTaskSql);
       rs = statement.executeQuery(getTaskSql);
 
       while (rs.next()) {
@@ -958,15 +955,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Exception getting task by id. Message: " + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getWorkflowTaskById transaction. Message: "
                 + e2.getMessage());
       }
@@ -1023,7 +1020,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       String getConditionsSql = "SELECT * FROM workflow_conditions WHERE workflow_condition_id = "
           + conditionId;
 
-      LOG.log(Level.FINE, "getWorkflowConditionById: Executing: "
+      LOG.info("getWorkflowConditionById: Executing: "
           + getConditionsSql);
       rs = statement.executeQuery(getConditionsSql);
 
@@ -1036,15 +1033,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Exception getting condition by id. Message: " + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getWorkflowConditionById transaction. Message: "
                 + e2.getMessage());
       }
@@ -1100,7 +1097,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
       String getEventSql = "SELECT DISTINCT event_name FROM event_workflow_map ORDER BY event_name ASC";
 
-      LOG.log(Level.FINE, "getRegisteredEvents: Executing: " + getEventSql);
+      LOG.info("getRegisteredEvents: Executing: " + getEventSql);
       rs = statement.executeQuery(getEventSql);
       events = new Vector();
 
@@ -1115,15 +1112,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Exception getting registered events. Message: "
+      LOG.error(e.getMessage());
+      LOG.warn("Exception getting registered events. Message: "
           + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getRegisteredEvents transaction. Message: "
                 + e2.getMessage());
       }
@@ -1253,7 +1250,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           + " "
           + "ORDER BY workflow_condition_map.condition_order";
 
-      LOG.log(Level.FINE, "getConditionsByWorkflowId: Executing: "
+      LOG.info("getConditionsByWorkflowId: Executing: "
           + getConditionsSql);
       rs = statement.executeQuery(getConditionsSql);
       conditions = new Vector<WorkflowCondition>();
@@ -1270,9 +1267,8 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(
-          Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Exception getting conditions for workflow. Message: "
               + e.getMessage());
       try {
@@ -1280,7 +1276,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getConditionsByWorkflowId transaction. Message: "
                 + e2.getMessage());
       }
@@ -1336,7 +1332,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           + "FROM workflow_tasks "
           + "WHERE workflow_task_id = " + taskId;
 
-      LOG.log(Level.FINE, "getTaskById: Executing: " + getTasksSql);
+      LOG.info("getTaskById: Executing: " + getTasksSql);
       rs = statement.executeQuery(getTasksSql);
      
 
@@ -1352,15 +1348,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Exception getting tasks for workflow. Message: "
+      LOG.error(e.getMessage());
+      LOG.warn("Exception getting tasks for workflow. Message: "
           + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getTasksByWorkflowId transaction. Message: "
                 + e2.getMessage());
       }
@@ -1410,7 +1406,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       String sql = "INSERT INTO workflows (workflow_id, workflow_name) VALUES ('"+workflow.getId()+"','"
           + workflow.getName() + "')";
 
-      LOG.log(Level.FINE, "commitWorkflowToDB: Executing: " + sql);
+      LOG.info("commitWorkflowToDB: Executing: " + sql);
       statement.execute(sql);
 
       sql = "SELECT MAX(workflow_id) AS max_id FROM workflows";
@@ -1425,21 +1421,20 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       // event to workflow map
       sql = "INSERT INTO event_workflow_map (workflow_id, event_name) VALUES ("
           + workflowId + ",'workflow-" + workflowId + "')";
-      LOG.log(Level.FINE, "commitWorkflowToDB: Executing: " + sql);
+      LOG.info("commitWorkflowToDB: Executing: " + sql);
       statement.execute(sql);
       conn.commit();
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Exception adding workflow. Message: " + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(
-            Level.SEVERE,
+        LOG.error(
             "Unable to rollback workflow transaction. Message: "
                 + e2.getMessage());
       }
@@ -1488,7 +1483,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       statement = conn.createStatement();
 
       String sql = "SELECT MAX(workflow_task_id) AS max_id FROM workflow_tasks";
-      LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
+      LOG.info("commitTaskToDB: Executing: " + sql);
       rs = statement.executeQuery(sql);
 
       while (rs.next()) {
@@ -1507,29 +1502,29 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           + "', '"
           + task.getTaskInstanceClassName() + "')";
 
-      LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
+      LOG.info("commitTaskToDB: Executing: " + sql);
       statement.execute(sql);
 
       if (workflow != null) {
         // task to workflow map
         sql = "INSERT INTO workflow_task_map (workflow_id, workflow_task_id, task_order) VALUES ("
             + workflow.getId() + "," + taskId + ",1)";
-        LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
+        LOG.info("commitTaskToDB: Executing: " + sql);
         statement.execute(sql);
       }
 
       conn.commit();
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Exception adding task. Message: " + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE, "Unable to rollback task transaction. Message: "
+        LOG.error("Unable to rollback task transaction. Message: "
             + e2.getMessage());
       }
       throw new RepositoryException(e.getMessage());
@@ -1579,7 +1574,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           + "FROM workflow_conditions "
           + "ORDER BY workflow_condition_id";
 
-      LOG.log(Level.FINE, "getConditions: Executing: "
+      LOG.info("getConditions: Executing: "
           + getConditionsSql);
       rs = statement.executeQuery(getConditionsSql);
       conditions = new Vector<WorkflowCondition>();
@@ -1596,15 +1591,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Exception getting conditions. Message: "
+      LOG.error(e.getMessage());
+      LOG.warn("Exception getting conditions. Message: "
           + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE,
+        LOG.error(
             "Unable to rollback getConditions transaction. Message: "
                 + e2.getMessage());
       }
@@ -1655,7 +1650,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
           + "FROM workflow_tasks, workflow_task_map WHERE workflow_tasks.workflow_task_id = workflow_task_map.workflow_task_id "
                            + "ORDER BY workflow_task_map.task_order";
 
-      LOG.log(Level.FINE, "getTasks: Executing: " + getTasksSql);
+      LOG.info("getTasks: Executing: " + getTasksSql);
       rs = statement.executeQuery(getTasksSql);
       tasks = new Vector<WorkflowTask>();
 
@@ -1676,16 +1671,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Exception getting tasks. Message: " + e.getMessage());
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(
-            Level.SEVERE,
+        LOG.error(
             "Unable to rollback getTasks transaction. Message: "
                 + e2.getMessage());
       }

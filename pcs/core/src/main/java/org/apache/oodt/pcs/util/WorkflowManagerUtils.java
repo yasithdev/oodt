@@ -21,6 +21,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import org.apache.xmlrpc.XmlRpcClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -28,8 +30,6 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -45,7 +45,7 @@ public class WorkflowManagerUtils implements Serializable {
   private WorkflowManagerClient client;
 
   /* our log stream */
-  private static final Logger LOG = Logger.getLogger(WorkflowManagerUtils.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(WorkflowManagerUtils.class.getName());
 
   private URL wmUrl;
 
@@ -66,7 +66,7 @@ public class WorkflowManagerUtils implements Serializable {
     try {
       this.client.updateWorkflowInstanceStatus(wInstId, status);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
     }
 
   }
@@ -97,7 +97,7 @@ public class WorkflowManagerUtils implements Serializable {
     try {
       return this.client.getWorkflowInstancesByStatus(status);
     } catch (Exception e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "exception obtaining workflow instances by status: [" + status
               + "]: message: " + e.getMessage());
       return null;
@@ -108,7 +108,7 @@ public class WorkflowManagerUtils implements Serializable {
     try {
       return this.client.getNumWorkflowInstancesByStatus(status);
     } catch (Exception e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "exception obtaining num workflow instances by status: [" + status
               + "]: message: " + e.getMessage());
       return -1;
@@ -139,7 +139,7 @@ public class WorkflowManagerUtils implements Serializable {
     try {
       url = new URL(urlStr);
     } catch (MalformedURLException e) {
-      LOG.log(Level.SEVERE, "PCS: Unable to generate url from url string: ["
+      LOG.error("PCS: Unable to generate url from url string: ["
           + urlStr + "]: Message: " + e.getMessage());
     }
 

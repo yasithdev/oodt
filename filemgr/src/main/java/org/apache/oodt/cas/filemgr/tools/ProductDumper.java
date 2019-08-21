@@ -19,19 +19,20 @@ package org.apache.oodt.cas.filemgr.tools;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -45,7 +46,7 @@ import java.util.logging.Logger;
 public final class ProductDumper {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(ProductDumper.class
+    private static final Logger LOG = LoggerFactory.getLogger(ProductDumper.class
             .getName());
 
     /* our file manager client */
@@ -59,11 +60,11 @@ public final class ProductDumper {
         try {
             this.fmClient = RpcCommunicationFactory.createClient(new URL(fmUrlStr));
         } catch (MalformedURLException e) {
-            LOG.log(Level.SEVERE, "malformed file manager url: [" + fmUrlStr
+            LOG.error("malformed file manager url: [" + fmUrlStr
                     + "]", e);
             throw new InstantiationException(e.getMessage());
         } catch (ConnectionException e) {
-            LOG.log(Level.SEVERE, "unable to connect to file manager: ["
+            LOG.error("unable to connect to file manager: ["
                     + fmUrlStr + "]", e);
             throw new InstantiationException(e.getMessage());
         }
@@ -82,7 +83,7 @@ public final class ProductDumper {
             product.setProductReferences(this.fmClient
                     .getProductReferences(product));
         } catch (CatalogException e) {
-            LOG.log(Level.WARNING,
+            LOG.warn(
                     "Unable to obtain product references! Message: "
                             + e.getMessage());
         }
@@ -94,7 +95,7 @@ public final class ProductDumper {
         try {
             XMLUtils.writeXmlFile(p.toXML(), fullProdFilePath);
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "product xml file not generated: reason: "
+            LOG.warn("product xml file not generated: reason: "
                     + e.getMessage(), e);
         }
     }

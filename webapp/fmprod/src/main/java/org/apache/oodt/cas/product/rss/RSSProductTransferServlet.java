@@ -28,6 +28,8 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.util.DateConvert;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -39,8 +41,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -81,7 +81,7 @@ public class RSSProductTransferServlet extends HttpServlet {
     private RSSConfig rssconf;
 
     /* our log stream */
-    private Logger LOG = Logger.getLogger(RSSProductTransferServlet.class
+    private Logger LOG = LoggerFactory.getLogger(RSSProductTransferServlet.class
             .getName());
 
     public static final String COPYRIGHT_BOILER_PLATE = "Copyright 2010: Apache Software Foundation";
@@ -118,11 +118,11 @@ public class RSSProductTransferServlet extends HttpServlet {
         try {
             fClient = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
         } catch (MalformedURLException e) {
-            LOG.log(Level.SEVERE,
+            LOG.error(
                     "Unable to initialize file manager url in RSS Servlet: [url="
                             + fileManagerUrl + "], Message: " + e.getMessage());
         } catch (ConnectionException e) {
-            LOG.log(Level.SEVERE,
+            LOG.error(
                     "Unable to initialize file manager url in RSS Servlet: [url="
                             + fileManagerUrl + "], Message: " + e.getMessage());
         }
@@ -156,8 +156,8 @@ public class RSSProductTransferServlet extends HttpServlet {
         try {
             currentTransfers = fClient.getCurrentFileTransfers();
         } catch (DataTransferException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
+            LOG.error(e.getMessage());
+            LOG.warn(
                     "Exception getting current transfers from file manager: Message: "
                             + e.getMessage());
             return;

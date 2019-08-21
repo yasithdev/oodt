@@ -20,6 +20,8 @@ package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
 import org.apache.oodt.product.ProductException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -28,8 +30,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractCrawlLister implements OFSNListHandler {
 
-  protected final static Logger LOG = Logger
+  protected final static Logger LOG = LoggerFactory
       .getLogger(AbstractCrawlLister.class.getName());
 
   protected static final FileFilter FILE_FILTER = new FileFilter() {
@@ -92,7 +92,7 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
     stack.push(dirRoot.isDirectory() ? dirRoot : dirRoot.getParentFile());
     while (!stack.isEmpty()) {
       File dir = (File) stack.pop();
-      LOG.log(Level.INFO, "OFSN: Crawling " + dir);
+      LOG.info("OFSN: Crawling " + dir);
 
       File[] productFiles;
       productFiles = crawlForDirs ? dir.listFiles(DIR_FILTER) : dir.listFiles(FILE_FILTER);

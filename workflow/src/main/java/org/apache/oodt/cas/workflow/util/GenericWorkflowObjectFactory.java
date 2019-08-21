@@ -31,12 +31,12 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
 import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.List;
 import java.util.Vector;
 
@@ -49,7 +49,7 @@ import java.util.Vector;
 public final class GenericWorkflowObjectFactory {
 
 	/* our log stream */
-	public static Logger LOG = Logger.getLogger(GenericWorkflowObjectFactory.class
+	public static Logger LOG = LoggerFactory.getLogger(GenericWorkflowObjectFactory.class
 			.getName());
 
 	private GenericWorkflowObjectFactory() throws InstantiationException{
@@ -62,15 +62,15 @@ public final class GenericWorkflowObjectFactory {
          return ((WorkflowEngineFactory) Class.forName(engineFactory)
                .newInstance()).createWorkflowEngine();
       } catch (ClassNotFoundException e) {
-         LOG.log(Level.WARNING, "ClassNotFoundException when "
+         LOG.warn("ClassNotFoundException when "
                + "loading workflow engine factory class "
                + engineFactory + " Message: " + e.getMessage());
       } catch (InstantiationException e) {
-         LOG.log(Level.WARNING, "InstantiationException when "
+         LOG.warn("InstantiationException when "
                + "loading workflow engine factory class "
                + engineFactory + " Message: " + e.getMessage());
       } catch (IllegalAccessException e) {
-         LOG.log(Level.WARNING, "IllegalAccessException when loading "
+         LOG.warn("IllegalAccessException when loading "
                + "workflow engine factory class "
                + engineFactory + " Message: " + e.getMessage());
       }
@@ -82,15 +82,15 @@ public final class GenericWorkflowObjectFactory {
          return ((EngineRunnerFactory) Class.forName(engineFactory)
                .newInstance()).createEngineRunner();
       } catch (ClassNotFoundException e) {
-         LOG.log(Level.WARNING, "ClassNotFoundException when "
+         LOG.warn("ClassNotFoundException when "
                + "loading engine runner factory class "
                + engineFactory + " Message: " + e.getMessage());
       } catch (InstantiationException e) {
-         LOG.log(Level.WARNING, "InstantiationException when "
+         LOG.warn("InstantiationException when "
                + "loading engine runner factory class "
                + engineFactory + " Message: " + e.getMessage());
       } catch (IllegalAccessException e) {
-         LOG.log(Level.WARNING, "IllegalAccessException when loading "
+         LOG.warn("IllegalAccessException when loading "
                + "engine runner factory class "
                + engineFactory + " Message: " + e.getMessage());
       }
@@ -102,15 +102,15 @@ public final class GenericWorkflowObjectFactory {
          return ((WorkflowRepositoryFactory) Class.forName(repositoryFactory)
                .newInstance()).createRepository();
       } catch (ClassNotFoundException e) {
-         LOG.log(Level.WARNING, "ClassNotFoundException when "
+         LOG.warn("ClassNotFoundException when "
                + "loading engine runner factory class "
                + repositoryFactory + " Message: " + e.getMessage());
       } catch (InstantiationException e) {
-         LOG.log(Level.WARNING, "InstantiationException when "
+         LOG.warn("InstantiationException when "
                + "loading engine runner factory class "
                + repositoryFactory + " Message: " + e.getMessage());
       } catch (IllegalAccessException e) {
-         LOG.log(Level.WARNING, "IllegalAccessException when loading "
+         LOG.warn("IllegalAccessException when loading "
                + "engine runner factory class "
                + repositoryFactory + " Message: " + e.getMessage());
       }
@@ -127,18 +127,18 @@ public final class GenericWorkflowObjectFactory {
 			factory = (WorkflowInstanceRepositoryFactory) clazz.newInstance();
 			return factory.createInstanceRepository();
 		} catch (ClassNotFoundException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
-			LOG.log(Level.WARNING, "ClassNotFoundException when "
+			LOG.error(e.getMessage());
+			LOG.warn("ClassNotFoundException when "
 					+ "loading workflow instance repository factory class "
 					+ serviceFactory + " Message: " + e.getMessage());
 		} catch (InstantiationException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
-			LOG.log(Level.WARNING, "InstantiationException when "
+			LOG.error(e.getMessage());
+			LOG.warn("InstantiationException when "
 					+ "loading workflow instance repository factory class "
 					+ serviceFactory + " Message: " + e.getMessage());
 		} catch (IllegalAccessException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
-			LOG.log(Level.WARNING, "IllegalAccessException when loading "
+			LOG.error(e.getMessage());
+			LOG.warn("IllegalAccessException when loading "
 					+ "workflow instance repository factory class "
 					+ serviceFactory + " Message: " + e.getMessage());
 		}
@@ -171,19 +171,19 @@ public final class GenericWorkflowObjectFactory {
 				return taskInstance;
 
 			} catch (ClassNotFoundException e) {
-				LOG.log(Level.SEVERE, e.getMessage());
-				LOG.log(Level.WARNING,
+				LOG.error(e.getMessage());
+				LOG.warn(
 						"ClassNotFound, Unable to locate task class: "
 								+ className + ": cannot instantiate!");
 				return null;
 			} catch (InstantiationException e) {
-				LOG.log(Level.SEVERE, e.getMessage());
-				LOG.log(Level.WARNING, "Unable to instantiate task class: "
+				LOG.error(e.getMessage());
+				LOG.warn("Unable to instantiate task class: "
 						+ className + ": Reason: " + e.getMessage() + " !");
 				return null;
 			} catch (IllegalAccessException e) {
-				LOG.log(Level.SEVERE, e.getMessage());
-				LOG.log(Level.WARNING,
+				LOG.error(e.getMessage());
+				LOG.warn(
 						"IllegalAccessException when instantiating task class: "
 								+ className + ": cannot instantiate!");
 				return null;
@@ -219,33 +219,33 @@ public final class GenericWorkflowObjectFactory {
         return taskInstance;
 
       } catch (ClassNotFoundException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
-        LOG.log(Level.WARNING,
+        LOG.error(e.getMessage());
+        LOG.warn(
             "ClassNotFound, Unable to locate task class: "
                 + className + ": cannot instantiate!");
         return null;
       } catch (InstantiationException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
-        LOG.log(Level.WARNING, "Unable to instantiate task class: "
+        LOG.error(e.getMessage());
+        LOG.warn("Unable to instantiate task class: "
             + className + ": Reason: " + e.getMessage() + " !");
         return null;
       } catch (IllegalAccessException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
-        LOG.log(Level.WARNING,
+        LOG.error(e.getMessage());
+        LOG.warn(
             "IllegalAccessException when instantiating task class: "
                 + className + ": cannot instantiate!");
         return null;
       }
       catch (NoSuchMethodException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
-        LOG.log(Level.WARNING,
+        LOG.error(e.getMessage());
+        LOG.warn(
             "NoSuchMethodException when instantiating task class: "
                 + className + ": cannot instantiate!");
         return null;
       }
       catch (InvocationTargetException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
-        LOG.log(Level.WARNING,
+        LOG.error(e.getMessage());
+        LOG.warn(
             "InvocationTargetException when instantiating task class: "
                 + className + ": cannot instantiate!");
         return null;
@@ -278,19 +278,19 @@ public final class GenericWorkflowObjectFactory {
 						.newInstance();
 				return conditionInstance;
 			} catch (ClassNotFoundException e) {
-				LOG.log(Level.SEVERE, e.getMessage());
-				LOG.log(Level.WARNING, "Unable to locate condition class: "
+				LOG.error(e.getMessage());
+				LOG.warn("Unable to locate condition class: "
 						+ className + ": cannot instantiate!");
 				return null;
 			} catch (InstantiationException e) {
-				LOG.log(Level.SEVERE, e.getMessage());
-				LOG.log(Level.WARNING,
+				LOG.error(e.getMessage());
+				LOG.warn(
 						"Unable to instantiate condition class: " + className
 								+ ": Reason: " + e.getMessage() + " !");
 				return null;
 			} catch (IllegalAccessException e) {
-				LOG.log(Level.SEVERE, e.getMessage());
-				LOG.log(Level.WARNING,
+				LOG.error(e.getMessage());
+				LOG.warn(
 						"IllegalAccessException when instantiating condition class: "
 								+ className + ": cannot instantiate!");
 				return null;
@@ -322,19 +322,19 @@ public final class GenericWorkflowObjectFactory {
 						.newInstance();
 				return workflow;
 			} catch (ClassNotFoundException e) {
-				LOG.log(Level.SEVERE, e.getMessage());
-				LOG.log(Level.WARNING, "Unable to locate workflow class: "
+				LOG.error(e.getMessage());
+				LOG.warn("Unable to locate workflow class: "
 						+ className + ": cannot instantiate!");
 				return null;
 			} catch (InstantiationException e) {
-				LOG.log(Level.SEVERE, e.getMessage());
-				LOG.log(Level.WARNING,
+				LOG.error(e.getMessage());
+				LOG.warn(
 						"Unable to instantiate workflow class: " + className
 								+ ": Reason: " + e.getMessage() + " !");
 				return null;
 			} catch (IllegalAccessException e) {
-				LOG.log(Level.SEVERE, e.getMessage());
-				LOG.log(Level.WARNING,
+				LOG.error(e.getMessage());
+				LOG.warn(
 						"IllegalAccessException when instantiating workflow class: "
 								+ className + ": cannot instantiate!");
 				return null;
@@ -351,19 +351,19 @@ public final class GenericWorkflowObjectFactory {
 	      return sorterClass.newInstance();
 	    }
 	    catch (ClassNotFoundException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
-        LOG.log(Level.WARNING, "Unable to locate workflow prioritizer class: "
+        LOG.error(e.getMessage());
+        LOG.warn("Unable to locate workflow prioritizer class: "
             + className + ": cannot instantiate!");
         return null;
       } catch (InstantiationException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
-        LOG.log(Level.WARNING,
+        LOG.error(e.getMessage());
+        LOG.warn(
             "Unable to instantiate workflow prioritizer class: " + className
                 + ": Reason: " + e.getMessage() + " !");
         return null;
       } catch (IllegalAccessException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
-        LOG.log(Level.WARNING,
+        LOG.error(e.getMessage());
+        LOG.warn(
             "IllegalAccessException when instantiating workflow prioritizer class: "
                 + className + ": cannot instantiate!");
         return null;

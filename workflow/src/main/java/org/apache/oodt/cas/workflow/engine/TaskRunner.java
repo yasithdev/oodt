@@ -23,11 +23,8 @@ import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
 import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -63,7 +60,7 @@ public class TaskRunner implements Runnable {
 
   private final EngineRunner runner;
 
-  private static final Logger LOG = Logger
+  private static final Logger LOG = LoggerFactory
       .getLogger(TaskRunner.class.getName());
 
   public TaskRunner(TaskQuerier taskQuerier, EngineRunner runner) {
@@ -89,9 +86,7 @@ public class TaskRunner implements Runnable {
           runner.execute(nextTaskProcessor);
         }
       } catch (Exception e) {
-        LOG.log(Level.SEVERE, e.getMessage());
-        LOG.log(
-            Level.SEVERE,
+        LOG.error(
             "Engine failed while submitting jobs to its runner : "
                 + e.getMessage(), e);
         this.flagProcessorAsFailed(nextTaskProcessor, e.getMessage());

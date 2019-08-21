@@ -26,6 +26,8 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.product.exceptions.CasProductException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,8 +39,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -54,7 +54,7 @@ import java.util.zip.ZipOutputStream;
 public final class DataUtils implements DataDeliveryKeys {
 
   /* our log stream */
-  private static final Logger LOG = Logger.getLogger(DataUtils.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(DataUtils.class);
 
   /* file filter to list zip files */
   private static final FileFilter ZIP_FILTER = new FileFilter() {
@@ -73,7 +73,7 @@ public final class DataUtils implements DataDeliveryKeys {
 
     // try and remove it first
     if (!new File(datasetZipFilePath).delete()) {
-      LOG.log(Level.WARNING, "Attempt to remove temp dataset zip file: ["
+      LOG.warn("Attempt to remove temp dataset zip file: ["
           + datasetZipFilePath + "] failed.");
     }
 
@@ -105,10 +105,10 @@ public final class DataUtils implements DataDeliveryKeys {
       in.close();
 
       if (!productZipFile.delete()) {
-        LOG.log(Level.WARNING, "Unable to remove tempoary product zip file: ["
+        LOG.warn("Unable to remove tempoary product zip file: ["
                                + productZipFile.getAbsolutePath() + "]");
       } else {
-        LOG.log(Level.INFO, "Deleting original product zip file: ["
+        LOG.info("Deleting original product zip file: ["
                             + productZipFile.getAbsolutePath() + "]");
       }
     }
@@ -132,7 +132,7 @@ public final class DataUtils implements DataDeliveryKeys {
 
     // try and remove it first
     if (!new File(productZipFilePath).delete()) {
-      LOG.log(Level.WARNING, "Attempt to remove temp zip file: ["
+      LOG.warn("Attempt to remove temp zip file: ["
           + productZipFilePath + "] failed.");
     }
 
@@ -144,7 +144,7 @@ public final class DataUtils implements DataDeliveryKeys {
       try {
         File prodFile = new File(new URI(r.getDataStoreReference()));
         if (prodFile.isDirectory()) {
-          LOG.log(Level.WARNING, "Data store reference is a directory. Not adding directory to the zip file: ["
+          LOG.warn("Data store reference is a directory. Not adding directory to the zip file: ["
                                  + r.getDataStoreReference() + "]");
           continue;
         }
@@ -153,8 +153,8 @@ public final class DataUtils implements DataDeliveryKeys {
         addZipEntryFromStream(in, out, filename);
         in.close();
       } catch (URISyntaxException e) {
-        LOG.log(Level.WARNING, "Unable to get filename from uri: ["
-                               + r.getDataStoreReference() + "]");
+        LOG.warn("Unable to get filename from uri: ["
+                               + r.getDataStoreReference() + "]", e);
       }
 
     }

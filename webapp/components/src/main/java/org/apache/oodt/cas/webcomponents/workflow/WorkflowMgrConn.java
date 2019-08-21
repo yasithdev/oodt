@@ -22,8 +22,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
@@ -32,6 +30,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -45,7 +45,7 @@ public class WorkflowMgrConn implements Serializable {
 
   private static final long serialVersionUID = -9081117871702614402L;
 
-  private static final Logger LOG = Logger.getLogger(WorkflowMgrConn.class
+  private static final Logger LOG = LoggerFactory.getLogger(WorkflowMgrConn.class
       .getName());
 
   private WorkflowManagerClient wm;
@@ -54,7 +54,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       this.wm = RpcCommunicationFactory.createClient(new URL(wmUrlStr));
     } catch (MalformedURLException e) {
-      LOG.log(Level.SEVERE, "Unable to contact Workflow Manager at URL: ["
+      LOG.error("Unable to contact Workflow Manager at URL: ["
           + wmUrlStr + "]: Message: " + e.getMessage());
       this.wm = null;
     }
@@ -64,7 +64,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       return new SerializableWorkflowTask(this.wm.getTaskById(taskId));
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain workflow task with ID: ["
+      LOG.warn("Unable to obtain workflow task with ID: ["
           + taskId + "]: Message: " + e.getMessage());
       return null;
     }
@@ -75,7 +75,7 @@ public class WorkflowMgrConn implements Serializable {
       return new SerializableWorkflowCondition(this.wm
           .getConditionById(conditionId));
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain workflow condition with ID: ["
+      LOG.warn("Unable to obtain workflow condition with ID: ["
           + conditionId + "]: Message: " + e.getMessage());
       return null;
     }
@@ -85,7 +85,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       return this.wm.getWorkflowById(workflowId);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain workflow with ID: ["
+      LOG.warn("Unable to obtain workflow with ID: ["
           + workflowId + "]: Message: " + e.getMessage());
       return null;
     }
@@ -95,7 +95,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       return this.wm.getWorkflowsByEvent(eventName);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain workflows by event: ["
+      LOG.warn("Unable to obtain workflows by event: ["
           + eventName + "]: Message: " + e.getMessage());
       return new Vector<Workflow>();
     }
@@ -105,7 +105,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       return this.wm.getRegisteredEvents();
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain registered events: Message: "
+      LOG.warn("Unable to obtain registered events: Message: "
           + e.getMessage());
       return new Vector<String>();
     }
@@ -115,7 +115,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       return this.wm.getWorkflows();
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain workflows: Message: "
+      LOG.warn("Unable to obtain workflows: Message: "
           + e.getMessage());
       return new Vector<Workflow>();
     }
@@ -125,7 +125,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       return this.wm.getWorkflowInstances();
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain workflow instances: Message: "
+      LOG.warn("Unable to obtain workflow instances: Message: "
           + e.getMessage());
       return new Vector<WorkflowInstance>();
     }
@@ -135,7 +135,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       return this.wm.getWorkflowInstancesByStatus(status);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain workflow instances by status: ["
+      LOG.warn("Unable to obtain workflow instances by status: ["
           + status + "]: Message: " + e.getMessage());
       return new Vector<WorkflowInstance>();
     }
@@ -146,7 +146,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       return this.wm.paginateWorkflowInstances(pageNum, status);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain workflow instance page: ["
+      LOG.warn("Unable to obtain workflow instance page: ["
           + pageNum + "] by status: [" + status + "]: Message: "
           + e.getMessage());
       return null;
@@ -157,7 +157,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       return this.wm.paginateWorkflowInstances(pageNum);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain workflow instance page: ["
+      LOG.warn("Unable to obtain workflow instance page: ["
           + pageNum + "]: Message: " + e.getMessage());
       return null;
     }
@@ -167,7 +167,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       return this.wm.getWorkflowWallClockMinutes(inst.getId());
     } catch (Exception e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "Unable to obtain workflow wall clock mins: inst id: ["
               + inst.getId() + "]: Message: " + e.getMessage());
       return -999.0;
@@ -178,7 +178,7 @@ public class WorkflowMgrConn implements Serializable {
     try {
       return this.wm.getWorkflowCurrentTaskWallClockMinutes(inst.getId());
     } catch (Exception e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "Unable to obtain workflow current task wall clock mins: inst id: ["
               + inst.getId() + "]: Message: " + e.getMessage());
       return -999.0;

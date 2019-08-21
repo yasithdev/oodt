@@ -27,13 +27,13 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -47,7 +47,7 @@ public class FileManagerConn {
 
   private FileManagerClient fm;
 
-  private static final Logger LOG = Logger
+  private static final Logger LOG = LoggerFactory
       .getLogger(FileManagerConn.class.getName());
 
   public FileManagerConn(String fmUrlStr) {
@@ -69,7 +69,7 @@ public class FileManagerConn {
     try {
       refs = fm.getProductReferences(p);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to get references for product: ["
+      LOG.warn("Unable to get references for product: ["
           + p.getProductName() + "]: Reason: " + e.getMessage());
     }
 
@@ -82,7 +82,7 @@ public class FileManagerConn {
     try {
       return fm.getProductTypeByName(name);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to get product type by name: [" + name
+      LOG.warn("Unable to get product type by name: [" + name
           + "]: Message: " + e.getMessage());
       return null;
     }
@@ -94,7 +94,7 @@ public class FileManagerConn {
     try {
       return fm.getProductById(id);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to get product by id: [" + id
+      LOG.warn("Unable to get product by id: [" + id
           + "]: Message: " + e.getMessage());
       return null;
     }
@@ -107,7 +107,7 @@ public class FileManagerConn {
     try {
       met = fm.getMetadata(p);
     } catch (CatalogException e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "Unable to get metadata and display product received time for: ["
               + p.getProductName() + "]: Reason: " + e.getMessage());
     }
@@ -121,7 +121,7 @@ public class FileManagerConn {
     try {
       return fm.getElementsByProductType(type);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain elements for product type: ["
+      LOG.warn("Unable to obtain elements for product type: ["
           + type.getName() + "]: Reason: " + e.getMessage());
       return new Vector<Element>();
     }
@@ -134,8 +134,8 @@ public class FileManagerConn {
     try {
       types = this.fm.getProductTypes();
     } catch (RepositoryManagerException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
+      LOG.error(e.getMessage());
+      LOG.warn(
           "Unable to obtain product types: Reason: [" + e.getMessage() + "]");
     }
     return types;
@@ -149,7 +149,7 @@ public class FileManagerConn {
     try {
       this.fm = RpcCommunicationFactory.createClient(new URL(urlStr));
     } catch (Exception e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "Unable to connect to the file manager at: [" + urlStr + "]");
       this.fm = null;
     }
@@ -157,7 +157,7 @@ public class FileManagerConn {
 
   private boolean isConnected() {
     if (this.fm == null) {
-      LOG.warning(
+      LOG.warn(
           "File Manager Connection is null: Default objects for Products, Product Types, References, etc., will be returned.");
       return false;
     } else

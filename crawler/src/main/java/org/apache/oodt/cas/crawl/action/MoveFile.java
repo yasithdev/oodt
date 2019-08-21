@@ -18,11 +18,11 @@ package org.apache.oodt.cas.crawl.action;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
 
 //OODT imports
 import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
+import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //Spring imports
@@ -65,10 +65,10 @@ public class MoveFile extends CrawlerAction {
          if (createToDir) {
             toFile.getParentFile().mkdirs();
          }
-         LOG.log(Level.INFO, "Moving file " + srcFile.getAbsolutePath()
+         LOG.info("Moving file " + srcFile.getAbsolutePath()
                + " to " + toFile.getAbsolutePath());
          if(!srcFile.renameTo(toFile)) {//If the file failed to copy
-        	 LOG.log(Level.INFO, "Moving failed, possibly because ingest dir is nfs mounted. Retrying to move " + srcFile.getAbsolutePath()
+        	 LOG.info("Moving failed, possibly because ingest dir is nfs mounted. Retrying to move " + srcFile.getAbsolutePath()
                      + " to " + toFile.getAbsolutePath());
         	 FileUtils.copyFileToDirectory(srcFile, toFile.getParentFile());
         	 FileUtils.forceDelete(srcFile); //Need to delete the old file

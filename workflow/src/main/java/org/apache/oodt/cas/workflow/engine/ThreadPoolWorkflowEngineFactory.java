@@ -21,13 +21,13 @@ import static java.lang.Boolean.getBoolean;
 import static java.lang.Integer.getInteger;
 import static java.lang.Long.getLong;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Factory class for creating {@link ThreadPoolWorkflowEngine}s.
@@ -37,7 +37,7 @@ import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
  */
 public class ThreadPoolWorkflowEngineFactory implements WorkflowEngineFactory {
 
-  private static final Logger LOG = Logger
+  private static final Logger LOG = LoggerFactory
       .getLogger(ThreadPoolWorkflowEngineFactory.class.getName());
 
   private static final String INSTANCE_REPO_FACTORY_PROPERTY = "workflow.engine.instanceRep.factory";
@@ -70,8 +70,7 @@ public class ThreadPoolWorkflowEngineFactory implements WorkflowEngineFactory {
     try {
       return new URL(PathUtils.replaceEnvVariables(System.getProperty(RESMGR_URL_PROPERTY)));
     } catch (Exception e) {
-      LOG.log(
-          Level.INFO,
+      LOG.info(
           "No Resource Manager URL provided or malformed URL: executing jobs " +
           "locally. URL: ["+PathUtils.replaceEnvVariables(System.getProperty(RESMGR_URL_PROPERTY))+"]");
       return null;

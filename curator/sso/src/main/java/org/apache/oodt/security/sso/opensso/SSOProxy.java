@@ -30,13 +30,13 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -52,7 +52,7 @@ import java.util.logging.Logger;
  */
 public class SSOProxy implements SSOMetKeys {
 
-  private static final Logger LOG = Logger.getLogger(SSOProxy.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(SSOProxy.class.getName());
   private static final String AUTH_ENDPOINT;
   private static final String AUTH_ENDPOINT_KEY = "AUTH_ENDPOINT";
   private static final String IDENT_READ_ENDPOINT;
@@ -84,10 +84,10 @@ public class SSOProxy implements SSOMetKeys {
       LOG_ENDPOINT = LOGOUT_ENDPOINT;
     }
 
-    LOG.log(Level.INFO, AUTH_ENDPOINT_KEY + " set to " + AUTH_ENDPOINT);
-    LOG.log(Level.INFO, IDENT_READ_ENDPOINT_KEY + " set to " + IDENT_READ_ENDPOINT);
-    LOG.log(Level.INFO, IDENT_ATTR_ENDPOINT_KEY + " set to " + IDENT_ATTR_ENDPOINT);
-    LOG.log(Level.INFO, LOG_ENDPOINT_KEY + " set to " + LOG_ENDPOINT);
+    LOG.info(AUTH_ENDPOINT_KEY + " set to " + AUTH_ENDPOINT);
+    LOG.info(IDENT_READ_ENDPOINT_KEY + " set to " + IDENT_READ_ENDPOINT);
+    LOG.info(IDENT_ATTR_ENDPOINT_KEY + " set to " + IDENT_ATTR_ENDPOINT);
+    LOG.info(LOG_ENDPOINT_KEY + " set to " + LOG_ENDPOINT);
   }
 
   public String authenticate(String username, String password) {
@@ -120,7 +120,7 @@ public class SSOProxy implements SSOMetKeys {
       response = handler.handleResponse(response1);
       ssoToken = response.substring(9);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
     } finally {
       post.releaseConnection();
     }
@@ -132,7 +132,7 @@ public class SSOProxy implements SSOMetKeys {
           throws IOException, SingleSignOnException {
     HttpClient httpClient = new DefaultHttpClient();
     HttpPost post = new HttpPost(IDENT_READ_ENDPOINT);
-    LOG.log(Level.INFO, "Obtaining identity: username: [" + username
+    LOG.info("Obtaining identity: username: [" + username
             + "]: token: [" + token + "]: REST url: [" + IDENT_READ_ENDPOINT
             + "]");
     NameValuePair[] data = { new BasicNameValuePair("name", username),
@@ -162,7 +162,7 @@ public class SSOProxy implements SSOMetKeys {
   public UserDetails getUserAttributes(String token) throws IOException, SingleSignOnException {
     HttpClient httpClient = new DefaultHttpClient();
     HttpPost post = new HttpPost(IDENT_READ_ENDPOINT);
-    LOG.log(Level.INFO, "Obtaining user attributes: token: [" + token
+    LOG.info("Obtaining user attributes: token: [" + token
             + "]: REST url: [" + IDENT_ATTR_ENDPOINT + "]");
     NameValuePair[] data = { new BasicNameValuePair("subjectid", token) };
 
@@ -190,7 +190,7 @@ public class SSOProxy implements SSOMetKeys {
   public void logout(String token) {
     HttpClient httpClient = new DefaultHttpClient();
     HttpPost post = new HttpPost(LOG_ENDPOINT);
-    LOG.log(Level.INFO, "Logging out: token: [" + token + "]: REST url: ["
+    LOG.info("Logging out: token: [" + token + "]: REST url: ["
             + LOG_ENDPOINT + "]");
     NameValuePair[] data = { new BasicNameValuePair("subjectid", token) };
 
@@ -211,10 +211,10 @@ public class SSOProxy implements SSOMetKeys {
       }
     } catch (HttpException e) {
       // TODO Auto-generated catch block
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
     } catch (IOException e) {
       // TODO Auto-generated catch block
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
     } finally {
       post.releaseConnection();
     }
@@ -258,8 +258,8 @@ public class SSOProxy implements SSOMetKeys {
         }
       }
     } catch (IOException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Error reading service response line: [" + line
+      LOG.error(e.getMessage());
+      LOG.warn("Error reading service response line: [" + line
               + "]: Message: " + e.getMessage());
     } finally {
       try {
@@ -308,8 +308,8 @@ public class SSOProxy implements SSOMetKeys {
         }
       }
     } catch (IOException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Error reading service response line: [" + line
+      LOG.error(e.getMessage());
+      LOG.warn("Error reading service response line: [" + line
               + "]: Message: " + e.getMessage());
     } finally {
       try {

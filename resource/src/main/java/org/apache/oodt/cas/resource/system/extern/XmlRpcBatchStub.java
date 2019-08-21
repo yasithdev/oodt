@@ -27,13 +27,13 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobInputException;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 import org.apache.xmlrpc.WebServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 //APACHE imports
@@ -57,7 +57,7 @@ public class XmlRpcBatchStub {
     private WebServer webServer = null;
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(XmlRpcBatchStub.class
+    private static Logger LOG = LoggerFactory.getLogger(XmlRpcBatchStub.class
         .getName());
 
     private Map jobThreadMap = null;
@@ -72,7 +72,7 @@ public class XmlRpcBatchStub {
 
         jobThreadMap = new ConcurrentHashMap();
 
-        LOG.log(Level.INFO, "XmlRpc Batch Stub started by "
+        LOG.info("XmlRpc Batch Stub started by "
                             + System.getProperty("user.name", "unknown"));
     }
 
@@ -119,7 +119,7 @@ public class XmlRpcBatchStub {
         Job job = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
         Thread jobThread = (Thread) jobThreadMap.get(job.getId());
         if (jobThread == null) {
-            LOG.log(Level.WARNING, "Job: [" + job.getId()
+            LOG.warn("Job: [" + job.getId()
                                    + "] not managed by this batch stub");
             return false;
         }
@@ -135,7 +135,7 @@ public class XmlRpcBatchStub {
         try {
             Job job = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
 
-            LOG.log(Level.INFO, "stub attempting to execute class: ["
+            LOG.info("stub attempting to execute class: ["
                                 + job.getJobInstanceClassName() + "]");
 
             exec = GenericResourceManagerObjectFactory
@@ -157,7 +157,7 @@ public class XmlRpcBatchStub {
             try {
                 threadRunner.join();
             } catch (InterruptedException e) {
-                LOG.log(Level.INFO, "Current job: [" + job.getName()
+                LOG.info("Current job: [" + job.getName()
                                     + "]: killed: exiting gracefully");
                 synchronized (jobThreadMap) {
                     Thread endThread = (Thread) jobThreadMap.get(job.getId());
@@ -177,7 +177,7 @@ public class XmlRpcBatchStub {
 
             return runner.wasSuccessful();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage());
             return false;
         }
     }
@@ -230,7 +230,7 @@ public class XmlRpcBatchStub {
             try {
                 this.successful = job.execute(in);
             } catch (JobInputException e) {
-                LOG.log(Level.SEVERE, e.getMessage());
+                LOG.error(e.getMessage());
                 this.successful = false;
             }
 

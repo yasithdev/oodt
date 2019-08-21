@@ -21,7 +21,6 @@ package org.apache.oodt.cas.workflow.instrepo;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.lucene.index.*;
@@ -31,13 +30,15 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 
 //Lucene imports
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
  * @version $Revision$
  * 
  * <p>
- * A Factory class for creating {@link LuceneWorkflowEngine}s.
+ * A Factory class for creating {@link LuceneWorkflowInstanceRepository}.
  * </p>.
  */
 public class LuceneWorkflowInstanceRepositoryFactory implements
@@ -50,7 +51,7 @@ public class LuceneWorkflowInstanceRepositoryFactory implements
     private int pageSize = -1;
     
 	/* our log stream */
-    private static final Logger LOG = Logger.getLogger(LuceneWorkflowInstanceRepositoryFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(LuceneWorkflowInstanceRepositoryFactory.class);
 
     public LuceneWorkflowInstanceRepositoryFactory()
             throws InstantiationException {
@@ -92,13 +93,13 @@ public class LuceneWorkflowInstanceRepositoryFactory implements
 
 				writer = new IndexWriter(indexDir, config);
 	        } catch (Exception e) {
-	            LOG.severe("Unable to create index: " + e.getMessage());
+	            LOG.error("Unable to create index: " + e.getMessage(), e);
 	        } finally {
 	            if (writer != null) {
 	                try {
 	                    writer.close();
 	                } catch (Exception e) {
-	                    LOG.severe("Unable to close index: " + e.getMessage());
+	                    LOG.error("Unable to close index: " + e.getMessage(), e);
 	                }
 	            }
 	        }

@@ -39,8 +39,7 @@ public class WmServicesClient {
   /**
    * Constructor
    * 
-   * @param workflowDir
-   *          the directory where workflow files exist
+   * @param serverurl the path where workflow files exist
    */
   public WmServicesClient(String serverurl) {
     this.serverurl = serverurl;

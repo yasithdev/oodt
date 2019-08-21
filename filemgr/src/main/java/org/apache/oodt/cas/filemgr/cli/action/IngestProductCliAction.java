@@ -19,6 +19,7 @@ package org.apache.oodt.cas.filemgr.cli.action;
 //OODT static imports
 
 import org.apache.commons.lang.Validate;
+import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -26,12 +27,12 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URI;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.apache.oodt.cas.filemgr.structs.Product.STRUCTURE_HIERARCHICAL;
 import static org.apache.oodt.cas.filemgr.structs.Product.STRUCTURE_STREAM;
@@ -50,7 +51,7 @@ import static org.apache.oodt.cas.filemgr.versioning.VersioningUtils.getURIsFrom
  * @author bfoster (Brian Foster)
  */
 public class IngestProductCliAction extends FileManagerCliAction {
-   private static Logger LOG = Logger.getLogger(IngestProductCliAction.class.getName());
+   private static Logger LOG = LoggerFactory.getLogger(IngestProductCliAction.class.getName());
    private String productName;
    private String productStructure;
    private String productTypeName;
@@ -116,7 +117,7 @@ public class IngestProductCliAction extends FileManagerCliAction {
                      new SerializableMetadata(getUri(metadataFile).toURL()
                            .openStream()), dataTransferer != null));
       } catch (Exception e) {
-         LOG.log(Level.SEVERE, e.getMessage());
+         LOG.error(e.getMessage(), e);
          throw new CmdLineActionException("Failed to ingest product '"
                + productName + "' : " + e.getMessage(), e);
       }

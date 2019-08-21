@@ -22,6 +22,8 @@ package org.apache.oodt.cas.workflow.instrepo;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.commons.util.DateConvert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.util.Collections;
@@ -31,8 +33,6 @@ import java.util.List;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -50,7 +50,7 @@ public class MemoryWorkflowInstanceRepository extends
     private ConcurrentHashMap workflowInstMap = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger
+    private static final Logger LOG = LoggerFactory
             .getLogger(MemoryWorkflowInstanceRepository.class.getName());
 
     /**
@@ -96,9 +96,7 @@ public class MemoryWorkflowInstanceRepository extends
                 .getId());
 
         if (inst == null) {
-            LOG
-                    .log(
-                            Level.WARNING,
+            LOG.warn(
                             "Attempt to update workflow instance id: "
                                     + wInst.getId()
                                     + " workflow instance is not being tracked by this engine!");

@@ -17,6 +17,8 @@ package org.apache.oodt.pcs.input;
 
 //OODT imports
 import org.apache.oodt.commons.xml.DOMUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -30,8 +32,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -50,7 +50,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public final class PGEXMLFileUtils {
 
   /* our log stream */
-  private static final Logger LOG = Logger.getLogger(PGEXMLFileUtils.class
+  private static final Logger LOG = LoggerFactory.getLogger(PGEXMLFileUtils.class
       .getName());
 
   public static Map getMatrixsAsMap(Element group)
@@ -340,7 +340,7 @@ public final class PGEXMLFileUtils {
     try {
       xmlInputStream = new File(xmlFile).toURL().openStream();
     } catch (IOException e) {
-      LOG.log(Level.WARNING, "IOException when getting input stream from ["
+      LOG.warn("IOException when getting input stream from ["
           + xmlFile + "]: returning null document root");
       return null;
     }
@@ -352,7 +352,7 @@ public final class PGEXMLFileUtils {
       parser = factory.newDocumentBuilder();
       document = parser.parse(inputSource);
     } catch (Exception e) {
-      LOG.warning("Unable to parse xml file [" + xmlFile + "]." + "Reason is ["
+      LOG.warn("Unable to parse xml file [" + xmlFile + "]." + "Reason is ["
           + e + "]");
       return null;
     }

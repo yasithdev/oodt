@@ -28,6 +28,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.XmlStructFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -46,8 +48,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -83,7 +83,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
     private List workflowHomeUris = null;
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(XMLWorkflowRepository.class
+    private static Logger LOG = LoggerFactory.getLogger(XMLWorkflowRepository.class
             .getName());
 
     /* our task map */
@@ -468,11 +468,10 @@ public class XMLWorkflowRepository implements WorkflowRepository {
               }
             } catch (URISyntaxException e) {
               LOG
-                  .log(
-                      Level.WARNING,
+                  .warn(
                       "DirUri: "
                       + dirUri
-                      + " is not a directory: skipping task loading for it.");
+                      + " is not a directory: skipping task loading for it.", e);
             }
 
           }
@@ -520,11 +519,10 @@ public class XMLWorkflowRepository implements WorkflowRepository {
               }
             } catch (URISyntaxException e) {
               LOG
-                  .log(
-                      Level.WARNING,
+                  .warn(
                       "DirUri: "
                       + dirUri
-                      + " is not a directory: skipping condition loading for it.");
+                      + " is not a directory: skipping condition loading for it.", e);
             }
 
           }
@@ -564,9 +562,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
                       }
                       workflowMap.put(workflowId, w);
                     } else {
-                      LOG
-                          .log(
-                              Level.FINE,
+                      LOG.info(
                               "Ignoring workflow file: "
                               + workflowXmlFile
                               + " when loading workflows, workflow id: "
@@ -579,11 +575,10 @@ public class XMLWorkflowRepository implements WorkflowRepository {
               }
             } catch (URISyntaxException e) {
               LOG
-                  .log(
-                      Level.WARNING,
+                  .warn(
                       "DirUri: "
                       + dirUri
-                      + " is not a directory: skipping workflow loading for it.");
+                      + " is not a directory: skipping workflow loading for it.", e);
             }
 
           }
@@ -649,11 +644,10 @@ public class XMLWorkflowRepository implements WorkflowRepository {
               }
             } catch (URISyntaxException e) {
               LOG
-                  .log(
-                      Level.WARNING,
+                  .warn(
                       "DirUri: "
                       + dirUri
-                      + " is not a directory: skipping event loading for it.");
+                      + " is not a directory: skipping event loading for it.", e);
             }
 
           }
@@ -672,9 +666,9 @@ public class XMLWorkflowRepository implements WorkflowRepository {
         try {
             xmlInputStream = new File(xmlFile).toURL().openStream();
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
+            LOG.warn(
                     "IOException when getting input stream from [" + xmlFile
-                            + "]: returning null document root");
+                            + "]: returning null document root", e);
             return null;
         }
 
@@ -685,8 +679,8 @@ public class XMLWorkflowRepository implements WorkflowRepository {
             parser = factory.newDocumentBuilder();
             document = parser.parse(inputSource);
         } catch (Exception e) {
-            LOG.warning("Unable to parse xml file [" + xmlFile + "]."
-                    + "Reason is [" + e + "]");
+            LOG.warn("Unable to parse xml file [" + xmlFile + "]."
+                    + "Reason is [" + e + "]", e);
             return null;
         }
 

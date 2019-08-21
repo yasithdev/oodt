@@ -21,6 +21,8 @@ package org.apache.oodt.cas.workflow.util;
 //JDK imports
 
 import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,8 +31,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  * 
  */
 public class ScriptFile {
-    private static Logger LOG = Logger.getLogger(ScriptFile.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(ScriptFile.class.getName());
     private String commandShell = null;
 
     private List commands = null;
@@ -117,7 +117,7 @@ public class ScriptFile {
                     new File(filePath))));
             pw.println(toString());
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage());
             throw new WorkflowException("Error writing script file!: " + e.getMessage());
         } finally {
             try {

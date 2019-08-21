@@ -30,6 +30,8 @@ import org.apache.oodt.product.handlers.ofsn.metadata.OODTMetKeys;
 import org.apache.oodt.xmlquery.QueryElement;
 import org.apache.oodt.xmlquery.XMLQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -39,8 +41,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -61,7 +61,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
     OFSNMetKeys {
   public static final int INT = 1024;
-  private static Logger LOG = Logger.getLogger(OFSNUtils.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(OFSNUtils.class.getName());
   public static String extractFieldFromQuery(XMLQuery query, String name) {
     for (Iterator<QueryElement> i = query.getWhereElementSet().iterator(); i
         .hasNext();) {
@@ -125,7 +125,7 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
 
       return document;
     } catch (ParserConfigurationException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       return null;
     }
 
@@ -161,7 +161,7 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
         in.close();
       }
     } catch (IOException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
     } finally {
       if (out != null) {
         try {

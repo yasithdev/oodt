@@ -19,11 +19,11 @@ package org.apache.oodt.cas.resource.queuerepo;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  */
 public class XmlQueueRepositoryFactory implements QueueRepositoryFactory {
 
-	private static final Logger LOG = Logger
+	private static final Logger LOG = LoggerFactory
 			.getLogger(XmlQueueRepositoryFactory.class.getName());
 
 	public XmlQueueRepository createQueueRepository() {
@@ -50,9 +50,7 @@ public class XmlQueueRepositoryFactory implements QueueRepositoryFactory {
 			String[] dirUris = queuesDirUris.split(",");
 			return new XmlQueueRepository(Arrays.asList(dirUris));
 		} catch (Exception e) {
-			LOG
-					.log(
-							Level.SEVERE,
+			LOG.error(
 							"Failed to create XML Queue Repository (make sure you specify node-to-queue mapping java property 'org.apache.oodt.cas.resource.scheduler.nodetoqueues.dirs') : "
 									+ e.getMessage(), e);
 			return null;

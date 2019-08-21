@@ -23,11 +23,8 @@ import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.monitor.MonitorFactory;
 import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
-
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -36,7 +33,7 @@ import java.util.logging.Logger;
  */
 public class GangliaResourceMonitorFactory implements MonitorFactory {
 
-	private static final Logger LOG = Logger
+	private static final Logger LOG = LoggerFactory
 			.getLogger(GangliaResourceMonitorFactory.class.getName());
 
 	@Override
@@ -56,7 +53,7 @@ public class GangliaResourceMonitorFactory implements MonitorFactory {
 
 			return new GangliaResourceMonitor(loadCalculator, gmetadHost, gmetadPort);
 		} catch (Exception e) {
-			LOG.log(Level.SEVERE,
+			LOG.error(
 					"Failed to create Resource Monitor : " + e.getMessage(), e);
 			return null;
 		}

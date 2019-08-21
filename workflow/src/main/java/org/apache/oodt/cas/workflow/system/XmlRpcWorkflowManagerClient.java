@@ -29,14 +29,14 @@ import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -54,7 +54,7 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
     private XmlRpcClient client = null;
 
     /* our log stream */
-    private static Logger LOG = Logger
+    private static Logger LOG = LoggerFactory
             .getLogger(XmlRpcWorkflowManagerClient.class.getName());
 
     /* workflow manager url */
@@ -146,7 +146,7 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
             pageHash = (Map) client.execute("workflowmgr.getPrevPage",
                     argList);
         } catch (XmlRpcException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage());
             throw new Exception(e.getMessage());
         } catch (IOException e) {
             throw new Exception(e.getMessage());

@@ -20,15 +20,16 @@ package org.apache.oodt.cas.metadata.extractors;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
+import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-import org.apache.oodt.cas.metadata.extractors.CmdLineMetExtractor;
+
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -53,7 +54,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
  * </p>.
  */
 public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
-  private static Logger LOG = Logger.getLogger(CopyAndRewriteExtractor.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(CopyAndRewriteExtractor.class.getName());
   private final static String FILENAME = "Filename";
 
   private final static String FILE_LOCATION = "FileLocation";
@@ -87,7 +88,7 @@ public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
                           .getProperty("orig.met.file.path"))).toURL()
                   .openStream());
       } catch (Exception e) {
-          LOG.log(Level.SEVERE, e.getMessage());
+          LOG.error(e.getMessage());
           throw new MetExtractionException(
                   "error parsing original met file: ["
                           + ((CopyAndRewriteConfig) this.config)
@@ -102,7 +103,7 @@ public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
               .parseInt(((CopyAndRewriteConfig) this.config)
                       .getProperty("numRewriteFields"));
 
-      LOG.log(Level.FINE, "Extracting metadata: num rewrite fields: ["
+      LOG.info("Extracting metadata: num rewrite fields: ["
               + numOverrideFields + "]");
 
       for (int i = 0; i < numOverrideFields; i++) {
@@ -110,7 +111,7 @@ public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
                   .getProperty("rewriteField" + (i + 1));
           String rewriteFieldStr = ((CopyAndRewriteConfig) this.config)
                   .getProperty(rewriteFieldName + ".pattern");
-          LOG.log(Level.FINE, "Rewrite string: [" + rewriteFieldStr + "]");
+          LOG.info("Rewrite string: [" + rewriteFieldStr + "]");
           rewriteFieldStr = PathUtils.replaceEnvVariables(rewriteFieldStr,
                   met);
           met.replaceMetadata(rewriteFieldName, rewriteFieldStr);

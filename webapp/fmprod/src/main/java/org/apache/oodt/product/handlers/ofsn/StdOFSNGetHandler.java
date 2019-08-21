@@ -21,14 +21,14 @@ package org.apache.oodt.product.handlers.ofsn;
 //JDK imports
 
 import org.apache.oodt.product.ProductException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * 
  */
 public class StdOFSNGetHandler implements OFSNGetHandler {
-  private static Logger LOG = Logger.getLogger(StdOFSNGetHandler.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(StdOFSNGetHandler.class.getName());
   /*
    * (non-Javadoc)
    * 
@@ -75,7 +75,7 @@ public class StdOFSNGetHandler implements OFSNGetHandler {
             + "] bytes from product: num actually read: [" + numRead + "]");
       }
     } catch (IOException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       throw new ProductException("IO exception retrieving chunk of product: ["
           + filepath + "]: Message: " + e.getMessage());
     } finally {

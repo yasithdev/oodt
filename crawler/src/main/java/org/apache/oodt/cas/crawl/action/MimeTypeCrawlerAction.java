@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
 
 import static org.apache.oodt.cas.crawl.AutoDetectProductCrawler.MIME_TYPES_HIERARCHY;
 
@@ -58,7 +57,7 @@ public class MimeTypeCrawlerAction extends CrawlerAction {
           mimeTypeHierarchy))) {
          return this.actionToCall.performAction(product, productMetadata);
       } else {
-         LOG.log(Level.INFO, "Skipping action (id = " + this.getId()
+         LOG.info("Skipping action (id = " + this.getId()
                + " : description = " + this.getDescription()
                + " - doesn't apply to current product");
          return true;

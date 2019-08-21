@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.activation.DataHandler;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;

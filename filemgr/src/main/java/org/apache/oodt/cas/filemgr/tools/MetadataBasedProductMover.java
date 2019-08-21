@@ -29,14 +29,14 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -61,7 +61,7 @@ public class MetadataBasedProductMover {
     private FileManagerClient fmgrClient = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger
+    private static final Logger LOG = LoggerFactory
             .getLogger(MetadataBasedProductMover.class.getName());
 
     /**
@@ -103,12 +103,12 @@ public class MetadataBasedProductMover {
                         this.pathSpec, met);
 
                     if (locationsMatch(r.getDataStoreReference(), newLocPath)) {
-                        LOG.log(Level.INFO,
+                        LOG.info(
                             "Current and New locations match. " + p.getProductName() + " was not moved.");
                         continue;
                     }
 
-                    LOG.log(Level.INFO, "Moving product: ["
+                    LOG.info("Moving product: ["
                                         + p.getProductName() + "] from: ["
                                         + new File(new URI(r.getDataStoreReference()))
                                         + "] to: [" + newLocPath + "]");
@@ -116,7 +116,7 @@ public class MetadataBasedProductMover {
                     fmgrClient.moveProduct(p, newLocPath);
                     long timeAfter = System.currentTimeMillis();
                     double seconds = ((timeAfter - timeBefore) * 1.0) / DOUBLE;
-                    LOG.log(Level.INFO, "Product: [" + p.getProductName()
+                    LOG.info("Product: [" + p.getProductName()
                                         + "] move successful: took: [" + seconds
                                         + "] seconds");
                 }

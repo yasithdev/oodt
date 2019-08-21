@@ -21,8 +21,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.mesos.Protos.ExecutorID;
@@ -51,6 +49,8 @@ import org.apache.oodt.cas.resource.structs.exceptions.MesosFrameworkException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
 import org.apache.oodt.cas.resource.util.MesosUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author starchmd
@@ -66,7 +66,7 @@ public class ResourceMesosScheduler implements Scheduler, org.apache.oodt.cas.re
     Monitor mon;
 
     //Logger
-    private static final Logger LOG = Logger.getLogger(ResourceMesosScheduler.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ResourceMesosScheduler.class.getName());
     /**
      * Construct the scheduler
      * @param batch - batch manager (must be MesosBatchManager)
@@ -79,7 +79,7 @@ public class ResourceMesosScheduler implements Scheduler, org.apache.oodt.cas.re
         this.executor = executor;
         this.queue = queue;
         this.mon = mon;
-        LOG.log(Level.INFO,"Creating the resource-mesos scheduler.");
+        LOG.info("Creating the resource-mesos scheduler.");
     }
 
 
@@ -97,7 +97,7 @@ public class ResourceMesosScheduler implements Scheduler, org.apache.oodt.cas.re
      */
     @Override
     public void error(SchedulerDriver schedDriver, String error) {
-        LOG.log(Level.SEVERE,"Mesos issued an error: "+error);
+        LOG.error("Mesos issued an error: "+error);
         //TODO: kill something here.
     }
 
@@ -108,7 +108,7 @@ public class ResourceMesosScheduler implements Scheduler, org.apache.oodt.cas.re
     public void executorLost(SchedulerDriver schedDriver, ExecutorID executor,SlaveID slave, int status) {
         //Tasks will have a "task lost" message automatically q.e.d no action necessary.
         //TODO: do we need to restart?
-        LOG.log(Level.SEVERE,"Mesos executor "+executor+" on slave "+slave+" died with status "+status);
+        LOG.error("Mesos executor "+executor+" on slave "+slave+" died with status "+status);
     }
 
     /* (non-Javadoc)
@@ -118,10 +118,10 @@ public class ResourceMesosScheduler implements Scheduler, org.apache.oodt.cas.re
     public void frameworkMessage(SchedulerDriver schedDriver, ExecutorID executor,
             SlaveID slave, byte[] bytes) {
         try {
-            LOG.log(Level.INFO,"Mesos framework executor"+executor+" on slave "+slave+" issued message: "+
+            LOG.info("Mesos framework executor"+executor+" on slave "+slave+" issued message: "+
                 new String(bytes,"ascii"));
         } catch (UnsupportedEncodingException e) {
-            LOG.log(Level.WARNING,"Mesos framework message missed due to bad encoding: ascii. "+e.getMessage());
+            LOG.warn("Mesos framework message missed due to bad encoding: ascii. "+e.getMessage());
         }
     }
 
@@ -140,7 +140,7 @@ public class ResourceMesosScheduler implements Scheduler, org.apache.oodt.cas.re
     @Override
     public void registered(SchedulerDriver schedDriver, FrameworkID framework,
             MasterInfo masterInfo) {
-        LOG.log(Level.INFO,"Mesos framework registered: "+framework.getValue()+" with master: "+masterInfo.getId());
+        LOG.info("Mesos framework registered: "+framework.getValue()+" with master: "+masterInfo.getId());
     }
 
     /* (non-Javadoc)
@@ -148,7 +148,7 @@ public class ResourceMesosScheduler implements Scheduler, org.apache.oodt.cas.re
      */
     @Override
     public void reregistered(SchedulerDriver schedDriver, MasterInfo masterInfo) {
-        LOG.log(Level.INFO,"Mesos framework re-registered with: "+masterInfo.getId());
+        LOG.info("Mesos framework re-registered with: "+masterInfo.getId());
         //TODO: call start, we are registered.
 
     }
@@ -158,18 +158,18 @@ public class ResourceMesosScheduler implements Scheduler, org.apache.oodt.cas.re
      */
     @Override
     public void resourceOffers(SchedulerDriver driver, List<Offer> offers) {
-        LOG.log(Level.INFO,"Offered mesos resources: "+offers.size()+" offers.");
+        LOG.info("Offered mesos resources: "+offers.size()+" offers.");
         //Log, if possible the offers
-        if (LOG.isLoggable(Level.FINER)) {
+        if (LOG.isInfoEnabled()) {
             for (Offer offer : offers) {
                 try {
                     this.mon.addNode(new ResourceNode(offer.getSlaveId().getValue(),new URL("http://"+offer.getHostname()),-1));
                 } catch (MalformedURLException e) {
-                    LOG.log(Level.WARNING,"Cannot add node to monitor (bad url).  Giving up: "+e.getMessage());
+                    LOG.warn("Cannot add node to monitor (bad url).  Giving up: "+e.getMessage());
                 } catch ( MonitorException e) {
-                    LOG.log(Level.WARNING,"Cannot add node to monitor (unkn).  Giving up: "+e.getMessage());
+                    LOG.warn("Cannot add node to monitor (unkn).  Giving up: "+e.getMessage());
                 }
-                LOG.log(Level.FINER,"Offer ("+offer.getId().getValue()+"): "+offer.getHostname()+ "(Slave: "+
+                LOG.info("Offer ("+offer.getId().getValue()+"): "+offer.getHostname()+ "(Slave: "+
                         offer.getSlaveId().getValue()+") "+MesosUtilities.getResourceMessage(offer.getResourcesList()));
             }
         }
@@ -190,7 +190,7 @@ public class ResourceMesosScheduler implements Scheduler, org.apache.oodt.cas.re
         }
         for (Offer offer : offers) {
             if (!used.contains(offer.getId())) {
-                LOG.log(Level.INFO,"Rejecting Offer: "+offer.getId().getValue());
+                LOG.info("Rejecting Offer: "+offer.getId().getValue());
                 driver.declineOffer(offer.getId());
             }
         }
@@ -268,7 +268,7 @@ public class ResourceMesosScheduler implements Scheduler, org.apache.oodt.cas.re
      */
     @Override
     public void slaveLost(SchedulerDriver schedDriver, SlaveID slave) {
-        LOG.log(Level.WARNING,"Mesos slave "+slave+" lost, reissuing jobs.");
+        LOG.warn("Mesos slave "+slave+" lost, reissuing jobs.");
         //TODO: reregister jobs
     }
 
@@ -278,17 +278,17 @@ public class ResourceMesosScheduler implements Scheduler, org.apache.oodt.cas.re
     @Override
     public void statusUpdate(SchedulerDriver schedDriver, TaskStatus taskStatus) {
         //TODO: deliver messages, some rerun, some finish.
-        LOG.log(Level.INFO,"Status update: "+taskStatus.getMessage());
+        LOG.info("Status update: "+taskStatus.getMessage());
     }
 
 
 
     @Override
     public void run() {
-        LOG.log(Level.INFO,"Attempting to run framework. Nothing to do.");
-        LOG.log(Level.FINEST, "Paradigm shift enabled.");
-        LOG.log(Level.FINEST, "Spin and poll surplanted by event based execution.");
-        LOG.log(Level.FINEST, "Mesos-OODT Fusion complete.");
+        LOG.info("Attempting to run framework. Nothing to do.");
+        LOG.info("Paradigm shift enabled.");
+        LOG.info("Spin and poll surplanted by event based execution.");
+        LOG.info("Mesos-OODT Fusion complete.");
         //Don't run anything
         return;
     }
